@@ -189,3 +189,4 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   make_cover.py: new --crop, --captions; JPG is now the default output (--png optional) because the PNG was 2.7 MB.
   Files: docs\cover.jpg 1920x1078 510 KB (README now uses it + Steam preview). README/TECHNICAL/WORKSHOP-UPLOAD updated.
   Commit 84e23a8 pushed. Next: user approval -> public repo, GitHub release, Workshop upload.
+- WAITING on user's green light after more in-game tests (user approved making repo public 2026-10-01). On green light: apply any polishes, package.ps1 -Force, gh repo edit --visibility public, gh release create v1.0.0 with dist zip, then Steam upload per tools/WORKSHOP-UPLOAD.md (user does SteamCMD login), then fill STEAM_WORKSHOP_URL in README.
