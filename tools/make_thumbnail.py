@@ -4,8 +4,8 @@ r"""Builds the square Steam Workshop / mod thumbnail, docs\thumbnail.jpg (1024x1
 
 Style matches TrainingBattlesMod's preview_thumbnail (gold frame, Palatino small caps over a dark fade).
 1. Cuts the Throwing Weapons block out of the unmarked screenshots "A1 Before" / "A2 After" and redraws
-   their marks (screenshots\crossed\*.marks.json) MARK_SCALE x bigger, so the red X's and green ticks still
-   read on a 256 px Workshop tile. Panels go to screenshots\thumb\ (gitignored, like all screenshots).
+   their marks (screenshots\marks\*.marks.json) MARK_SCALE x bigger, so the red X's and green ticks still
+   read on a 256 px Workshop tile. Panels go to screenshots\thumbnail build\ (gitignored, like all screenshots).
 2. Renders tools\preview_thumbnail.html with headless Edge (or Chrome) to a 1024x1024 PNG.
 3. Saves docs\thumbnail.jpg, stepping JPEG quality down until it fits under 1 MB.
 
@@ -28,7 +28,7 @@ sys.path.insert(0, str(REPO / "tools"))
 from mark_soldiers import draw_marks  # noqa: E402
 
 SHOTS = REPO / "screenshots"
-WORK = SHOTS / "thumb"
+WORK = SHOTS / "thumbnail build"
 HTML = REPO / "tools" / "preview_thumbnail.html"
 OUT = REPO / "docs" / "thumbnail.jpg"
 STEAM_LIMIT = 1024 * 1024
@@ -49,8 +49,8 @@ BROWSERS = [
 
 
 def make_panel(name: str, shot: str, marks: str, box: tuple[int, int, int, int]) -> Path:
-    img = Image.open(SHOTS / shot).convert("RGB")
-    with open(SHOTS / "crossed" / marks, encoding="utf-8") as f:
+    img = Image.open(SHOTS / "originals" / shot).convert("RGB")
+    with open(SHOTS / "marks" / marks, encoding="utf-8") as f:
         img = draw_marks(img, json.load(f), MARK_SCALE)
     x0, y0, x1, y1 = box
     # crop may run past the bottom edge: pad with the image's own last rows instead of black

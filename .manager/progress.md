@@ -237,3 +237,4 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   WorkshopCreate.xml <Image> -> docs\thumbnail.jpg (WorkshopUpdate has no image, like TrainingBattles);
   WORKSHOP-UPLOAD.md: thumbnail step + add docs\cover.jpg as an extra screenshot on the item page. cover.jpg unchanged.
   Next: green light -> release.
+- Screenshots reorganized (local, gitignored): top = thumbnail.jpg + 4 '* marked.jpg'; subfolders originals/, marks/ (json), comparison/, 'thumbnail build'/, 'toni manual'/. Tools paths updated; make_thumbnail.py rerun gives byte-identical docs/thumbnail.jpg.
