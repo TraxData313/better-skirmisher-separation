@@ -1,0 +1,38 @@
+# Uploading to the Steam Workshop
+
+The upload uses Bannerlord's own uploader, `TaleWorlds.MountAndBlade.SteamWorkshop.exe` in the game's
+`bin\Win64_Shipping_Client`. It rides the logged-in Steam client: no SteamCMD, no password. Have Steam
+running and logged in.
+
+## Steps
+
+1. **Cover** (once, after the screenshots are in `docs\`):
+   ```powershell
+   python tools\make_cover.py docs\before.png docs\after.png
+   ```
+   Writes `docs\cover.png` (README) and `docs\cover.jpg` (Steam preview, under 1 MB).
+
+2. **Package** a clean build:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File tools\package.ps1
+   ```
+   Fills `dist\BetterSkirmisherSeparation` (what gets uploaded) and writes the release zip beside it.
+
+3. **Upload.** First time: `WorkshopCreate.xml` (creates a Private item). Every time after:
+   `WorkshopUpdate.xml` (put the item ID in place of `ITEM_ID` and set `ChangeNotes` first).
+   ```powershell
+   & "D:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.SteamWorkshop.exe" "C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\tools\WorkshopCreate.xml"
+   ```
+
+4. **On the item page** (Owner Controls): paste `tools\STEAM-DESCRIPTION.bbcode` as the description,
+   flip Private to Public, and add the Harmony required item. Put the Workshop link into `README.md`
+   in place of `STEAM_WORKSHOP_URL`, and the item ID into `WorkshopUpdate.xml`.
+
+## Uploader quirks
+
+- The root `<Tasks>` element must be the **first node** of the task file. An `<?xml?>` declaration
+  or a comment above it makes the tool parse zero tasks and exit as if it succeeded.
+- The item **title** comes from `module\SubModule.xml <Name>`, not the task file.
+- It ends by writing `steam_workshop_uploader.txt` (gitignored) and crashing on a harmless
+  press-any-key read. Judge success by **"Uploading done!"** in the output, never the exit code.
+- `WorkshopUpdate.xml` does not touch title, description or visibility; edit those on the item page.

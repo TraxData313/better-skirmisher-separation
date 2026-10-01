@@ -1,0 +1,26 @@
+<Tasks>
+    <CreateItem/>
+    <UpdateItem>
+        <!-- First-time Steam Workshop upload. Run with Steam open and logged in:
+               TaleWorlds.MountAndBlade.SteamWorkshop.exe "<this file's full path>"
+             (exe lives in the game's bin\Win64_Shipping_Client).
+             Uploader quirks (see WORKSHOP-UPLOAD.md): the root <Tasks> element must be the FIRST node
+             of this file - no <?xml?> declaration or comment above it. Comments are only safe HERE,
+             inside UpdateItem (and inside GetItem). The item TITLE is read from the module's
+             SubModule.xml <Name> ("Better Skirmisher Separation"), not from this file. Judge success by
+             "Item created. Item ID is ..." + "Uploading done!" in the output, not the exit code.
+             Run tools\package.ps1 first (it fills dist\BetterSkirmisherSeparation) and
+             tools\make_cover.py (it writes docs\cover.jpg, under Steam's 1 MB preview limit).
+             NEVER run this file again after the item exists - use WorkshopUpdate.xml. -->
+        <ModuleFolder Value="C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\dist\BetterSkirmisherSeparation"/>
+        <ItemDescription Value="Separates dedicated skirmishers from heavy troops that carry just one or two throwables, like Legionaries and Menavliatons. When a formation prefers Throwing Weapons in the Order of Battle, troops are ranked by what they actually carry: two or more javelin stacks first, then one stack, then pila carriers. Optional MCM settings: on/off and the minimum throwables a troop needs to count. Requires Harmony."/>
+        <Tags>
+            <Tag Value="Utility" />
+            <Tag Value="Native" />
+            <Tag Value="Singleplayer" />
+            <Tag Value="v1.4.8" />
+        </Tags>
+        <Image Value="C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\docs\cover.jpg"/>
+        <Visibility Value="Private"/>
+    </UpdateItem>
+</Tasks>
