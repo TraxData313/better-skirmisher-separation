@@ -247,3 +247,4 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   size and 256 px: card, ringed icon, magnifier, red X vs green ticks all read. Build: python tools\make_thumbnail.py
   --variant v2 (template tools\preview_thumbnail_v2.html); v1 rebuild byte-identical. WorkshopCreate.xml still uses
   docs\thumbnail.jpg; WORKSHOP-UPLOAD.md lists both options. Commits e919e40 + doc note.
+- Comparison rebuilt without captions (Toni: no '69' anywhere — troop size 70 minus the general made it 69 by accident; avoid that number in all public images/text). 9g next: v2 card shows '26 / 69' -> remove the count; tagline -> 'Legionaries are not skirmishers anymore.'

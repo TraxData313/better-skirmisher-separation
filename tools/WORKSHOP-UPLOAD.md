@@ -9,7 +9,7 @@ running and logged in.
 1. **Cover** (already built; redo only with new screenshots). The raw shots live in `screenshots\`
    (gitignored). The published cover came from:
    ```powershell
-   python tools\make_cover.py "screenshots\A1 Before marked.jpg" "screenshots\A2 After marked.jpg" --crop 100 130 3380 1300 --layout stack --no-crop --label-pos tr --tag-scale 0.6 --width 1920 --no-title --captions "23 of 69 in the wrong formation" "All 69 in the right place"
+   python tools\make_cover.py "screenshots\A1 Before marked.jpg" "screenshots\A2 After marked.jpg" --crop 100 130 3380 1300 --layout stack --no-crop --label-pos tr --tag-scale 0.6 --width 1920 --no-title
    ```
    Writes `docs\cover.jpg` (README image, and an extra screenshot on the Workshop page; `--png` adds a lossless copy).
 

@@ -16,11 +16,11 @@ label (and its caption) in a small corner tag instead of a band across the panel
 
 The published docs\cover.jpg was built with (screenshots\ is gitignored, the raw shots stay local):
 
-    python tools\make_cover.py "screenshots\A1 Before marked.jpg" "screenshots\A2 After marked.jpg" --crop 100 130 3380 1300 --layout stack --no-crop --label-pos tr --tag-scale 0.6 --width 1920 --no-title --captions "23 of 69 in the wrong formation" "All 69 in the right place"
+    python tools\make_cover.py "screenshots\A1 Before marked.jpg" "screenshots\A2 After marked.jpg" --crop 100 130 3380 1300 --layout stack --no-crop --label-pos tr --tag-scale 0.6 --width 1920 --no-title
 
 (3440x1440 shots of the same desert battle, marked by tools\mark_soldiers.py: red X = soldier in the
 wrong formation, green tick = right one. The crop keeps both blocks - infantry left, Throwing Weapons
-right; BEFORE has 11 + 12 = 23 X of 69, AFTER none. Pair B of the screenshots is not used.)
+right; BEFORE has 11 + 12 = 23 X, AFTER none. Pair B of the screenshots is not used.)
 
 Needs Pillow (pip install pillow).
 """
