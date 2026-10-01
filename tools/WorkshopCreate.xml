@@ -10,7 +10,7 @@
              SubModule.xml <Name> ("Better Skirmisher Separation"), not from this file. Judge success by
              "Item created. Item ID is ..." + "Uploading done!" in the output, not the exit code.
              Run tools\package.ps1 first (it fills dist\BetterSkirmisherSeparation) and
-             tools\make_thumbnail.py (it writes docs\thumbnail.jpg, the square preview, under 1 MB).
+             tools\make_thumbnail.py --variant v3 (it writes docs\thumbnail_v3.jpg, the square preview, under 1 MB).
              The stacked comparison docs\cover.jpg goes on the item page by hand as an extra screenshot.
              NEVER run this file again after the item exists - use WorkshopUpdate.xml. -->
         <ModuleFolder Value="C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\dist\BetterSkirmisherSeparation"/>

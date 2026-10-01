@@ -280,3 +280,4 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   (do Public LAST, after the page is complete). (b) cover.jpg as extra screenshot and (c) Harmony 2859188632 as required item are
   item-page only: Owner Controls "Add/edit images & videos" and "Add/Remove Required Items" - via claude-in-chrome with Toni
   logged in, or Toni by hand. Then README STEAM_WORKSHOP_URL -> the page URL.
+- Only thumbnail_v3 kept (docs + screenshots); v1/v2 images removed (script can still render them).

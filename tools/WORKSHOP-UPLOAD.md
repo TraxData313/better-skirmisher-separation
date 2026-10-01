@@ -18,21 +18,11 @@ Item: **3811452468** (created Private 2026-10-01 via `WorkshopCreate.xml` - neve
 
    **Thumbnail** (the Workshop preview `WorkshopCreate.xml` uploads, square like TrainingBattles'):
    ```powershell
-   python tools\make_thumbnail.py
+   python tools\make_thumbnail.py --variant v3
    ```
-   Renders `tools\preview_thumbnail.html` with headless Edge into `docs\thumbnail.jpg` (1024x1024, under
-   1 MB): BEFORE/AFTER of the Throwing Weapons block with enlarged marks, title and tagline below.
-
-   Three thumbnails to choose from (all 1024x1024, under 1 MB); `WorkshopCreate.xml` points at option 1:
-   - **Option 1** `docs\thumbnail.jpg` (`python tools\make_thumbnail.py`): BEFORE | AFTER, big title.
-   - **Option 2** `docs\thumbnail_v2.jpg` (`python tools\make_thumbnail.py --variant v2`, template
-     `tools\preview_thumbnail_v2.html`): the Order of Battle card of formation 2 with the Throwing filter
-     ringed and magnified ("Throwing ✓"), then BEFORE (Legionaries, red X) | AFTER (all javelin throwers).
-   - **Option 3** `docs\thumbnail_v3.jpg` (`python tools\make_thumbnail.py --variant v3`, template
-     `tools\preview_thumbnail_v3.html`): option 1's layout with the Throwing filter icon (cut from the card)
-     in a glowing gold ring, top centre on the split line: with the Throwing filter on, before -> after.
-   To use option 2 or 3, set `<Image>` in `WorkshopCreate.xml` to `docs\thumbnail_v2.jpg` / `docs\thumbnail_v3.jpg`;
-   the others can go up as extra screenshots on the item page.
+   Writes `docs\thumbnail_v3.jpg` (1024x1024, under 1 MB), the published thumbnail: BEFORE | AFTER of the
+   Throwing Weapons block with enlarged marks, the Throwing filter icon in a gold ring at the top centre,
+   title and tagline below. (The script can still render the rejected v1 / v2 drafts; they are not kept.)
 
 2. **Package** a clean build:
    ```powershell
