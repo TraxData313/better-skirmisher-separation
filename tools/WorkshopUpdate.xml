@@ -1,6 +1,6 @@
 <Tasks>
     <GetItem>
-        <!-- Updating the existing Workshop item: item 3811452468 (created 2026-10-01 by WorkshopCreate.xml). Set ChangeNotes below, run package.ps1, then run
+        <!-- Updating the existing Workshop item: item 3811452468 (created 2026-10-01 by WorkshopCreate.xml). Normally not run directly: tools\make_workshop_update.py builds a task from it (adds the description, change notes, visibility). Run package.ps1, then run
              TaleWorlds.MountAndBlade.SteamWorkshop.exe with this file's full path (Steam open).
              Same quirks as WorkshopCreate.xml: <Tasks> must be the file's first node, comments
              only inside GetItem/UpdateItem, title comes from SubModule.xml <Name>, and the tool

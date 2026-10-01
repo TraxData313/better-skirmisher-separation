@@ -30,16 +30,23 @@ Item: **3811452468** (created Private 2026-10-01 via `WorkshopCreate.xml` - neve
    ```
    Fills `dist\BetterSkirmisherSeparation` (what gets uploaded) and writes the release zip beside it.
 
-3. **Upload.** First time: `WorkshopCreate.xml` (creates a Private item). Every time after:
-   `WorkshopUpdate.xml` (put the item ID in place of `ITEM_ID` and set `ChangeNotes` first).
+3. **Upload.** First time only: `WorkshopCreate.xml` (created the Private item; never again). Every time
+   after, build a one-off task from `WorkshopUpdate.xml` with `make_workshop_update.py`. It sends the
+   content of `dist\BetterSkirmisherSeparation`, the description from `STEAM-DESCRIPTION.bbcode`
+   (escaped, line breaks as `&#10;`), the change notes, and optionally the visibility
+   (`Private` / `FriendsOnly` / `Public`; leave it out to keep the current one). The task goes to
+   `%TEMP%\bss_workshop_update.xml` and the script prints the path:
    ```powershell
-   & "D:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.SteamWorkshop.exe" "C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\tools\WorkshopCreate.xml"
+   $task = python tools\make_workshop_update.py --notes "v1.0.1 - what changed." --visibility Private
+   & "D:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.SteamWorkshop.exe" $task
    ```
+   (`--no-description` skips the description.) Run it from a scratch folder; success = "Uploading done!".
+   Every update re-uploads the module, so run `package.ps1 -Force` first. Going public later is the
+   same command with `--visibility Public`.
 
-4. **On the item page** (Owner Controls): paste `tools\STEAM-DESCRIPTION.bbcode` as the description,
-   flip Private to Public, and add the Harmony required item. Under "Add/edit images & videos" add
-   `docs\cover.jpg` (the stacked before/after comparison) as the first screenshot, right after the thumbnail. Put the Workshop link into `README.md`
-   in place of `STEAM_WORKSHOP_URL`, and the item ID into `WorkshopUpdate.xml`.
+4. **On the item page** (Owner Controls) - the uploader cannot do these: under "Add/edit images &
+   videos" add `docs\cover.jpg` (the stacked before/after comparison) as the first screenshot, right
+   after the thumbnail; under "Add/Remove Required Items" add Harmony (2859188632).
 
 ## Uploader quirks
 
@@ -48,7 +55,7 @@ Item: **3811452468** (created Private 2026-10-01 via `WorkshopCreate.xml` - neve
 - The item **title** comes from `module\SubModule.xml <Name>`, not the task file.
 - It ends by writing `steam_workshop_uploader.txt` (gitignored) and crashing on a harmless
   press-any-key read. Judge success by **"Uploading done!"** in the output, never the exit code.
-- `WorkshopUpdate.xml` does not touch title, description or visibility; edit those on the item page.
+- `WorkshopUpdate.xml` on its own does not touch description or visibility; `make_workshop_update.py` adds them.
 - It also writes `steam_appid.txt` (261550) into the working directory. Run it from a scratch folder
   (or the repo root, where both droppings are gitignored).
 - What the task file can set (strings in the exe, 2026-10-01): `ModuleFolder`, `ItemDescription`, `Tags`,
