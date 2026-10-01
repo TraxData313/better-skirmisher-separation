@@ -190,3 +190,15 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   Files: docs\cover.jpg 1920x1078 510 KB (README now uses it + Steam preview). README/TECHNICAL/WORKSHOP-UPLOAD updated.
   Commit 84e23a8 pushed. Next: user approval -> public repo, GitHub release, Workshop upload.
 - WAITING on user's green light after more in-game tests (user approved making repo public 2026-10-01). On green light: apply any polishes, package.ps1 -Force, gh repo edit --visibility public, gh release create v1.0.0 with dist zip, then Steam upload per tools/WORKSHOP-UPLOAD.md (user does SteamCMD login), then fill STEAM_WORKSHOP_URL in README.
+- Step 9b done (cover redo; old cover was wrong: its AFTER panel still showed Legionaries). User replaced screenshots
+  (screenshots\, 3440x1440, gitignored): "A1 Before"/"A2 After" = top-down, no HUD; left block = kite-shield infantry,
+  right block = Throwing Weapons formation. A1 right = red-pennoned Legionaries + silver-scale Menavliatons (+ a few
+  bundle peltasts); A2 right = all javelin-bundle skirmishers with small round shields, the pennoned heavies moved left.
+  "B1 Before"/"B2 After" (deployment HUD, formation 2 = 26) look REVERSED: B1 formation 2 = skirmishers, B2 formation 2
+  = Legionaries/Menavliatons -> pair B not used (ask user whether the B files are swapped).
+  Cover: pair A only, stacked (BEFORE top, AFTER bottom), both cropped to the throwing block, labels + captions in
+  top-right corner tags (sand, no troops covered). make_cover.py: new --label-pos band|tl|tr; stack via --layout stack
+  --no-crop. Command: python tools\make_cover.py "screenshots\A1 Before.jpg" "screenshots\A2 After.jpg" --crop 1960 330
+  3420 1290 --layout stack --no-crop --label-pos tr --width 1460 --no-title --captions "Legionaries / Menavliatons with
+  1-2 pila" "Real javelin skirmishers". docs\cover.jpg 1460x1923 (~3:4 portrait) 773 KB; overwrote the old one (no other
+  cover files in docs). Steam square thumbnails will centre-crop it.

@@ -11,10 +11,15 @@ Landscape screenshots go side by side, portrait ones are stacked; both are scale
 the Workshop preview shows best; --focus moves the crop, --no-crop keeps the full screenshots.
 --crop X0 Y0 X1 Y1 first cuts the same region (source pixels) out of both screenshots, so the cover
 shows the part that changed instead of two shrunken full frames; --captions adds a line under each.
+--layout stack --no-crop puts BEFORE on top of AFTER at the --crop aspect; --label-pos tl/tr puts each
+label (and its caption) in a small corner tag instead of a band across the panel.
 
 The published docs\cover.jpg was built with (screenshots\ is gitignored, the raw shots stay local):
 
-    python tools\make_cover.py "screenshots\BEFORE 2.jpg" "screenshots\AFTER 2.jpg" --crop 1100 250 1920 1065 --layout side --no-title --captions "Heavy spearmen with 1-2 javelins" "Real javelin skirmishers"
+    python tools\make_cover.py "screenshots\A1 Before.jpg" "screenshots\A2 After.jpg" --crop 1960 330 3420 1290 --layout stack --no-crop --label-pos tr --width 1460 --no-title --captions "Legionaries / Menavliatons with 1-2 pila" "Real javelin skirmishers"
+
+(3440x1440 shots of the same desert battle; the crop is the right-hand block = the Throwing Weapons
+formation. Pair B of the screenshots is not used.)
 
 Needs Pillow (pip install pillow).
 """
@@ -83,6 +88,30 @@ def label(canvas: Image.Image, box: tuple[int, int, int, int], text: str, top: b
     canvas.alpha_composite(overlay)
 
 
+def corner_tag(canvas: Image.Image, box: tuple[int, int, int, int], text: str, sub: str | None, right: bool) -> None:
+    """Label (+ optional caption line under it) in a dark rounded tag in a top corner of the panel, so
+    the middle of the shot - the troops - stays uncovered."""
+    x0, y0, x1, y1 = box
+    pw = x1 - x0
+    font = load_font(max(24, round(pw * 0.062)))
+    sfont = load_font(max(14, round(font.size * 0.42)))
+    overlay = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(overlay)
+    pad = round(font.size * 0.4)
+    tw = d.textlength(text, font=font)
+    sw = d.textlength(sub, font=sfont) if sub else 0
+    bw = max(tw, sw) + 2 * pad
+    bh = round(font.size * 1.15) + (round(sfont.size * 1.4) if sub else 0) + pad
+    m = round(font.size * 0.3)
+    bx = x1 - m - bw if right else x0 + m
+    by = y0 + m
+    d.rounded_rectangle((bx, by, bx + bw, by + bh), radius=pad, fill=(0, 0, 0, 165))
+    d.text((bx + pad, by + pad * 0.6), text, font=font, anchor="la", fill=(255, 255, 255, 255))
+    if sub:
+        d.text((bx + pad, by + pad * 0.6 + font.size * 1.15), sub, font=sfont, anchor="la", fill=DIVIDER + (255,))
+    canvas.alpha_composite(overlay)
+
+
 def caption(canvas: Image.Image, box: tuple[int, int, int, int], text: str) -> None:
     """Smaller line at the bottom of the panel on a dark fade (also hides HUD bits in the corner)."""
     x0, y0, x1, y1 = box
@@ -130,6 +159,9 @@ def main() -> None:
                     help="cut this region (source pixels) out of both screenshots first")
     ap.add_argument("--captions", nargs=2, metavar=("C1", "C2"), help="small line at the bottom of each panel")
     ap.add_argument("--labels", nargs=2, default=("BEFORE", "AFTER"), metavar=("L1", "L2"))
+    ap.add_argument("--label-pos", choices=("band", "tl", "tr"), default="band",
+                    help="band = full-width band on top of each panel (default); tl / tr = compact tag in the "
+                         "top-left / top-right corner, with the --captions line inside the tag")
     ap.add_argument("--no-title", action="store_true", help=f'leave out the small "{TITLE}" title')
     a = ap.parse_args()
 
@@ -169,9 +201,14 @@ def main() -> None:
         canvas.paste(after.resize((w, ah), Image.LANCZOS), (0, bh + div))
         boxes = [(0, 0, w, bh), (0, bh + div, w, bh + div + ah)]
 
-    for box, text in zip(boxes, a.labels):
-        label(canvas, box, text, top=True)
-    if a.captions:
+    if a.label_pos != "band":
+        subs = a.captions or (None, None)
+        for box, text, sub in zip(boxes, a.labels, subs):
+            corner_tag(canvas, box, text, sub, right=a.label_pos == "tr")
+    else:
+        for box, text in zip(boxes, a.labels):
+            label(canvas, box, text, top=True)
+    if a.captions and a.label_pos == "band":
         for box, text in zip(boxes, a.captions):
             caption(canvas, box, text)
     if not a.no_title:
