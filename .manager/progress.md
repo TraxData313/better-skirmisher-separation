@@ -261,3 +261,22 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   Build: python tools\make_thumbnail.py --variant v3 (template tools\preview_thumbnail_v3.html). WORKSHOP-UPLOAD.md
   lists option 3; WorkshopCreate.xml unchanged (option 1). v1/v2 images unchanged.
 - GO LIVE 2026-10-01: Toni chose thumbnail v3 (WorkshopCreate preview). Repo made public, release v1.0.0 with dist zip. Remaining: Toni uploads to Steam (tools/WORKSHOP-UPLOAD.md), then fill STEAM_WORKSHOP_URL in README + item ID in WorkshopUpdate.xml.
+
+## Phase 5: Steam release (2026-10-01) — Toni wants us to do it all ourselves via CLI
+10. [x] Learn the upload flow from ../TrainingBattlesMod and ../ImmersiveAI (workshop docs/tools), upload as Private, report item ID + what CLI can't do.
+11. [ ] Finish item page (description, comparison screenshot first, Harmony required item, public) + README link + WorkshopUpdate item ID.
+- Step 10 done (e986834). Flow learned from TrainingBattles/ImmersiveAI = Bannerlord's own TaleWorlds.MountAndBlade.SteamWorkshop.exe
+  riding the logged-in Steam client (no SteamCMD, no credentials). package.ps1 -Force (v1.0.0, dist = SubModule.xml + 17 KB dll),
+  then the exe with tools\WorkshopCreate.xml, run from scratchpad\upload (it drops steam_appid.txt + steam_workshop_uploader.txt in
+  the cwd). Output: "Item created. Item ID is 3811452468" + "Uploading done!", then the usual press-any-key crash (exit 82, ignore).
+  Item 3811452468, Private: https://steamcommunity.com/sharedfiles/filedetails/?id=3811452468 . ID now in WorkshopUpdate.xml;
+  WORKSHOP-UPLOAD.md has the ID + new quirks. No Steam Guard / legal-agreement prompt (account already has Workshop items).
+  Uploader capabilities (strings in the exe): task fields ModuleFolder, ItemDescription, Tags, Image, ChangeNotes, Visibility only
+  (SetItemTitle/Description/Tags/Content/Preview/Visibility). No AddItemPreviewFile (extra screenshots), no AddDependency
+  (required items). Current page description = the one-paragraph ItemDescription from WorkshopCreate.xml (plain text).
+  Step 11 plan: (a) description + Public + change notes CAN go via the uploader: a one-off task file = GetItem 3811452468 +
+  UpdateItem with ModuleFolder (same dist, harmless re-upload), ItemDescription = STEAM-DESCRIPTION.bbcode (1528 chars, limit 8000,
+  BBCode renders) with newlines escaped as &#10; and quotes/&/< escaped, ChangeNotes "v1.0.0 - first release", Visibility Public
+  (do Public LAST, after the page is complete). (b) cover.jpg as extra screenshot and (c) Harmony 2859188632 as required item are
+  item-page only: Owner Controls "Add/edit images & videos" and "Add/Remove Required Items" - via claude-in-chrome with Toni
+  logged in, or Toni by hand. Then README STEAM_WORKSHOP_URL -> the page URL.
