@@ -1,12 +1,11 @@
 <Tasks>
     <GetItem>
-        <!-- Updating the existing Workshop item: replace ITEM_ID with the number from the item's page
-             URL after the first upload, set ChangeNotes below, run package.ps1, then run
+        <!-- Updating the existing Workshop item: item 3811452468 (created 2026-10-01 by WorkshopCreate.xml). Set ChangeNotes below, run package.ps1, then run
              TaleWorlds.MountAndBlade.SteamWorkshop.exe with this file's full path (Steam open).
              Same quirks as WorkshopCreate.xml: <Tasks> must be the file's first node, comments
              only inside GetItem/UpdateItem, title comes from SubModule.xml <Name>, and the tool
              ends on a harmless press-any-key crash - trust "Uploading done!" in the output. -->
-        <ItemId Value="ITEM_ID"/>
+        <ItemId Value="3811452468"/>
     </GetItem>
     <UpdateItem>
         <ModuleFolder Value="C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\dist\BetterSkirmisherSeparation"/>

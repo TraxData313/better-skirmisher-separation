@@ -4,6 +4,9 @@ The upload uses Bannerlord's own uploader, `TaleWorlds.MountAndBlade.SteamWorksh
 `bin\Win64_Shipping_Client`. It rides the logged-in Steam client: no SteamCMD, no password. Have Steam
 running and logged in.
 
+Item: **3811452468** (created Private 2026-10-01 via `WorkshopCreate.xml` - never run that file again;
+`WorkshopUpdate.xml` carries the ID). Page: https://steamcommunity.com/sharedfiles/filedetails/?id=3811452468
+
 ## Steps
 
 1. **Cover** (already built; redo only with new screenshots). The raw shots live in `screenshots\`
@@ -56,3 +59,11 @@ running and logged in.
 - It ends by writing `steam_workshop_uploader.txt` (gitignored) and crashing on a harmless
   press-any-key read. Judge success by **"Uploading done!"** in the output, never the exit code.
 - `WorkshopUpdate.xml` does not touch title, description or visibility; edit those on the item page.
+- It also writes `steam_appid.txt` (261550) into the working directory. Run it from a scratch folder
+  (or the repo root, where both droppings are gitignored).
+- What the task file can set (strings in the exe, 2026-10-01): `ModuleFolder`, `ItemDescription`, `Tags`,
+  `Image`, `ChangeNotes`, `Visibility` (SetItemDescription / SetItemVisibility / SetItemPreview). It has
+  NO call for extra screenshots (AddItemPreviewFile) or required items (AddDependency): those are
+  item-page only. A description sent through `ItemDescription` sits in an XML attribute, so its line
+  breaks must be written as `&#10;` (a raw newline becomes a space); Steam renders it as BBCode, max
+  8000 characters.
