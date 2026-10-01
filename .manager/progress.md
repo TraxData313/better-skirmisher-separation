@@ -177,3 +177,15 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   mirrored (make_cover.py replaces it). steam_appid.txt (261550) created locally, gitignored like TrainingBattles.
   Commit eb1ac04 pushed. Next: step 9 (screenshots -> docs\before.png/after.png -> make_cover; user approval for public
   repo, GitHub release with the dist zip, Workshop upload).
+- Step 9a done (cover). Screenshots (screenshots\, 1920x1200, gitignored, not committed): pairs are the same desert custom
+  battle, formation 1 = infantry (50), formation 2 = Thrown filter (49). BEFORE/AFTER 1 = top-down deployment view, the
+  two blocks look alike (unreadable as a thumbnail). BEFORE/AFTER 2 = ground view behind the player: BEFORE 2 right block
+  (Thrown) = silver-lamellar heavies with red-pennoned spears (Legionaries/Menavliatons) + a few peltasts, left = kite-shield
+  infantry; AFTER 2 the heavies are in the left (infantry) block and the right block is javelin-bundle skirmishers.
+  Composition: pair 2 only, side by side, both cropped to the Thrown block (8:9 panels -> 16:9 cover), BEFORE/AFTER labels
+  over the sky, captions "Heavy spearmen with 1-2 javelins" / "Real javelin skirmishers" on a bottom fade (hides HUD).
+  Command: python tools\make_cover.py "screenshots\BEFORE 2.jpg" "screenshots\AFTER 2.jpg" --crop 1100 250 1920 1065
+  --layout side --no-title --captions "Heavy spearmen with 1-2 javelins" "Real javelin skirmishers"
+  make_cover.py: new --crop, --captions; JPG is now the default output (--png optional) because the PNG was 2.7 MB.
+  Files: docs\cover.jpg 1920x1078 510 KB (README now uses it + Steam preview). README/TECHNICAL/WORKSHOP-UPLOAD updated.
+  Commit 84e23a8 pushed. Next: user approval -> public repo, GitHub release, Workshop upload.
