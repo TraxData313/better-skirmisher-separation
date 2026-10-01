@@ -238,3 +238,12 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   WORKSHOP-UPLOAD.md: thumbnail step + add docs\cover.jpg as an extra screenshot on the item page. cover.jpg unchanged.
   Next: green light -> release.
 - Screenshots reorganized (local, gitignored): top = thumbnail.jpg + 4 '* marked.jpg'; subfolders originals/, marks/ (json), comparison/, 'thumbnail build'/, 'toni manual'/. Tools paths updated; make_thumbnail.py rerun gives byte-identical docs/thumbnail.jpg.
+- 9f (in progress): Toni wants a 2nd thumbnail that shows the Order of Battle formation card with the Throwing/skirmisher filter icon ticked (formation 2, 26/69; his circled sketch: screenshots/toni manual/'thumbnail idea - thrower icon circled.webp', the card is from the left UI of the B1 shot). Message: 'with skirmisher ticked, Before = Legionaries (red X), After = all javelin throwers'. Keep the current thumbnail too.
+- Step 9f done (thumbnail v2, user picks). docs\thumbnail_v2.jpg 1024x1024, 269 KB (copy: screenshots\thumbnail_v2.jpg):
+  top = formation-2 Order of Battle card (26 / 69, cut from originals\B1 Before x14..426 y396..700; identical in B2; only the
+  B shots have the UI) with the sand masked out, its Throwing icon (~32 px at 397,545) ringed in glowing gold + a leader line
+  to a magnifier circle and the label "Throwing ✓"; below = BEFORE | AFTER (A1/A2 Throwing block, wider crops, marks 2.3x,
+  tags top-right of each panel over empty sand); title one line "Better Skirmisher Separation", no tagline. Checked at full
+  size and 256 px: card, ringed icon, magnifier, red X vs green ticks all read. Build: python tools\make_thumbnail.py
+  --variant v2 (template tools\preview_thumbnail_v2.html); v1 rebuild byte-identical. WorkshopCreate.xml still uses
+  docs\thumbnail.jpg; WORKSHOP-UPLOAD.md lists both options. Commits e919e40 + doc note.
