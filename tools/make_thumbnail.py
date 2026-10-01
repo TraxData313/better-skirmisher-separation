@@ -1,12 +1,16 @@
-r"""Builds the square Steam Workshop / mod thumbnail, docs\thumbnail.jpg (1024x1024, under 1 MB).
+r"""Builds the square Steam Workshop / mod thumbnail (1024x1024, under 1 MB).
 
-    python tools\make_thumbnail.py
+    python tools\make_thumbnail.py                 # v1 -> docs\thumbnail.jpg    (BEFORE | AFTER, big title)
+    python tools\make_thumbnail.py --variant v2    # v2 -> docs\thumbnail_v2.jpg (the formation card with the
+                                                   #   Throwing Weapons filter ticked, then BEFORE | AFTER)
 
 Style matches TrainingBattlesMod's preview_thumbnail (gold frame, Palatino small caps over a dark fade).
 1. Cuts the Throwing Weapons block out of the unmarked screenshots "A1 Before" / "A2 After" and redraws
-   their marks (screenshots\marks\*.marks.json) MARK_SCALE x bigger, so the red X's and green ticks still
+   their marks (screenshots\marks\*.marks.json) 2-2.3x bigger, so the red X's and green ticks still
    read on a 256 px Workshop tile. Panels go to screenshots\thumbnail build\ (gitignored, like all screenshots).
-2. Renders tools\preview_thumbnail.html with headless Edge (or Chrome) to a 1024x1024 PNG.
+   v2 also cuts the Order of Battle card of formation 2 (26 / 69, Throwing Weapons filter ticked) out of
+   "B1 Before" (identical in B2) plus a close-up of its filter icon, which the HTML rings and magnifies.
+2. Renders tools\preview_thumbnail.html (v2: preview_thumbnail_v2.html) with headless Edge (or Chrome) to a 1024x1024 PNG.
 3. Saves docs\thumbnail.jpg, stepping JPEG quality down until it fits under 1 MB.
 
 docs\cover.jpg (the stacked BEFORE/AFTER comparison) is separate - see make_cover.py.
@@ -14,14 +18,16 @@ Needs Pillow and Edge or Chrome.
 """
 from __future__ import annotations
 
+import argparse
 import io
 import json
+import math
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "tools"))
@@ -29,17 +35,38 @@ from mark_soldiers import draw_marks  # noqa: E402
 
 SHOTS = REPO / "screenshots"
 WORK = SHOTS / "thumbnail build"
-HTML = REPO / "tools" / "preview_thumbnail.html"
-OUT = REPO / "docs" / "thumbnail.jpg"
 STEAM_LIMIT = 1024 * 1024
-MARK_SCALE = 2.0
-PANEL = (512, 700)  # matches .panel in the HTML
 
-# (screenshot, marks, crop box in source pixels) - the Throwing Weapons block, same aspect as PANEL
-PANELS = {
-    "before": ("A1 Before.jpg", "A1 Before.marks.json", (1985, 300, 2935, 1599)),
-    "after": ("A2 After.jpg", "A2 After.marks.json", (2000, 230, 2950, 1529)),
+# per variant: template, output, panel size (= .panel in the HTML) and
+# (screenshot, marks, crop box in source pixels) - the Throwing Weapons block, same aspect as the panel
+VARIANTS = {
+    "v1": {
+        "html": "preview_thumbnail.html", "out": "thumbnail.jpg", "panel": (512, 700), "mark_scale": 2.0,
+        "panels": {
+            "before": ("A1 Before.jpg", "A1 Before.marks.json", (1985, 300, 2935, 1599)),
+            "after": ("A2 After.jpg", "A2 After.marks.json", (2000, 230, 2950, 1529)),
+        },
+    },
+    "v2": {
+        "html": "preview_thumbnail_v2.html", "out": "thumbnail_v2.jpg", "panel": (512, 430), "mark_scale": 2.3,
+        "panels": {
+            "before": ("A1 Before.jpg", "A1 Before.marks.json", (1960, 350, 3110, 1316)),
+            "after": ("A2 After.jpg", "A2 After.marks.json", (1975, 320, 3125, 1286)),
+        },
+    },
 }
+
+# v2 setting card: formation 2 in the Order of Battle (3440x1440 shot), its Throwing Weapons icon,
+# and where the HTML draws them (keep in sync with .card / .zoom in preview_thumbnail_v2.html)
+CARD_SHOT = "B1 Before.jpg"
+CARD_BOX = (14, 396, 426, 700)
+ICON_BOX = (376, 524, 418, 566)        # square around the thrower icon + its green tick
+ICON_CENTER = (397, 545)
+CARD_BODY = (20, 426, 420, 694)        # the card body inside its gold border (tabs sit above it)
+MAGENTA = (255, 0, 255)
+CARD_POS, CARD_SIZE = (58, 52), (548, 404)
+RING = 92
+ZOOM_CENTER, ZOOM_R = (821, 211), 145
 
 BROWSERS = [
     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -48,33 +75,87 @@ BROWSERS = [
 ]
 
 
-def make_panel(name: str, shot: str, marks: str, box: tuple[int, int, int, int]) -> Path:
+def make_panel(name: str, shot: str, marks: str, box: tuple[int, int, int, int], size: tuple[int, int],
+               mark_scale: float) -> Path:
     img = Image.open(SHOTS / "originals" / shot).convert("RGB")
     with open(SHOTS / "marks" / marks, encoding="utf-8") as f:
-        img = draw_marks(img, json.load(f), MARK_SCALE)
+        img = draw_marks(img, json.load(f), mark_scale)
     x0, y0, x1, y1 = box
     # crop may run past the bottom edge: pad with the image's own last rows instead of black
     if y1 > img.height:
         y0, y1 = y0 - (y1 - img.height), img.height
-    panel = img.crop((x0, y0, x1, y1)).resize(PANEL, Image.LANCZOS)
+    panel = img.crop((x0, y0, x1, y1)).resize(size, Image.LANCZOS)
     out = WORK / f"thumb_{name}.jpg"
     panel.save(out, quality=94, subsampling=0)
     return out
 
 
-def main() -> None:
-    WORK.mkdir(parents=True, exist_ok=True)
-    paths = {n: make_panel(n, *spec) for n, spec in PANELS.items()}
+def cut_card(img: Image.Image) -> Image.Image:
+    """Makes the sand around the (semi-transparent) card transparent: a rounded rectangle for the card body,
+    and below its top edge a flood fill from the edges for the tab row (the sword tab and the "2" badge)."""
+    w, h = img.size
+    body = CARD_BODY[0] - CARD_BOX[0], CARD_BODY[1] - CARD_BOX[1], CARD_BODY[2] - CARD_BOX[0], CARD_BODY[3] - CARD_BOX[1]
+    alpha = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(alpha).rounded_rectangle(body, radius=10, fill=255)
+    marked = img.copy()
+    for x in range(0, w, 4):                       # seed every sand pixel along the top edge
+        if marked.getpixel((x, 0)) != MAGENTA:
+            ImageDraw.floodfill(marked, (x, 0), MAGENTA, thresh=60)
+    diff = ImageChops.difference(marked, Image.new("RGB", (w, h), MAGENTA)).convert("L")
+    tabs = diff.point(lambda v: 255 if v else 0)
+    alpha.paste(tabs.crop((0, 0, w, body[1] + 6)), (0, 0))
+    out = img.convert("RGBA")
+    out.putalpha(alpha)
+    return out
 
-    html = HTML.read_text(encoding="utf-8")
+
+def card_fill(html: str) -> str:
+    """v2: writes the card + icon crops and fills the ring / leader-line positions into the template."""
+    shot = Image.open(SHOTS / "originals" / CARD_SHOT).convert("RGB")
+    card = WORK / "thumb_card.png"
+    cut_card(shot.crop(CARD_BOX)).resize(CARD_SIZE, Image.LANCZOS).save(card)
+    icon = WORK / "thumb_icon.png"
+    shot.crop(ICON_BOX).resize((288, 288), Image.LANCZOS).filter(
+        ImageFilter.UnsharpMask(radius=3, percent=120, threshold=2)).save(icon)
+
+    k = CARD_SIZE[0] / (CARD_BOX[2] - CARD_BOX[0])
+    cx = CARD_POS[0] + (ICON_CENTER[0] - CARD_BOX[0]) * k
+    cy = CARD_POS[1] + (ICON_CENTER[1] - CARD_BOX[1]) * k
+    # leader line: ring edge -> magnifier edge, along the line between their centres
+    dx, dy = ZOOM_CENTER[0] - cx, ZOOM_CENTER[1] - cy
+    dist = math.hypot(dx, dy)
+    ux, uy = dx / dist, dy / dist
+    x0, y0 = cx + ux * RING / 2, cy + uy * RING / 2
+    length = dist - RING / 2 - ZOOM_R
+    for key, val in {"CARD_IMG": card.as_uri(), "ICON_IMG": icon.as_uri(),
+                     "RING_L": cx - RING / 2, "RING_T": cy - RING / 2,
+                     "LEAD_X": x0, "LEAD_Y": y0 - 2.5, "LEAD_W": length,
+                     "LEAD_A": math.degrees(math.atan2(dy, dx))}.items():
+        html = html.replace(key, val if isinstance(val, str) else f"{val:.1f}")
+    return html
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--variant", choices=sorted(VARIANTS), default="v1")
+    v = VARIANTS[ap.parse_args().variant]
+    out_path = REPO / "docs" / v["out"]
+    suffix = "" if v["out"] == "thumbnail.jpg" else "_" + Path(v["out"]).stem.split("_")[-1]
+
+    WORK.mkdir(parents=True, exist_ok=True)
+    paths = {n: make_panel(n + suffix, *spec, v["panel"], v["mark_scale"]) for n, spec in v["panels"].items()}
+
+    html = (REPO / "tools" / v["html"]).read_text(encoding="utf-8")
     html = html.replace("PANEL_BEFORE", paths["before"].as_uri()).replace("PANEL_AFTER", paths["after"].as_uri())
-    page = WORK / "thumbnail.html"
+    if "CARD_IMG" in html:
+        html = card_fill(html)
+    page = WORK / f"thumbnail{suffix}.html"
     page.write_text(html, encoding="utf-8")
 
     browser = next((b for b in BROWSERS if Path(b).exists()), None) or shutil.which("msedge") or shutil.which("chrome")
     if not browser:
         sys.exit("Edge or Chrome not found.")
-    png = WORK / "thumbnail.png"
+    png = WORK / f"thumbnail{suffix}.png"
     png.unlink(missing_ok=True)
     subprocess.run([browser, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=1",
                     "--allow-file-access-from-files", "--window-size=1024,1024", f"--screenshot={png}",
@@ -86,8 +167,8 @@ def main() -> None:
         img.save(buf, "JPEG", quality=q, optimize=True, progressive=True)
         if buf.tell() < STEAM_LIMIT:
             break
-    OUT.write_bytes(buf.getvalue())
-    print(f"{OUT}: {img.width}x{img.height}, {buf.tell() // 1024} KB, q{q}")
+    out_path.write_bytes(buf.getvalue())
+    print(f"{out_path}: {img.width}x{img.height}, {buf.tell() // 1024} KB, q{q}")
 
 
 if __name__ == "__main__":

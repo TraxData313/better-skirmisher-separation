@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!-- Steam Workshop / mod thumbnail v2, 1024x1024: "the setting -> BEFORE -> AFTER" story.
+     Same family as preview_thumbnail.html (gold frame, Palatino small caps, dark fade). Top: the Order of Battle
+     card of formation 2 (Throwing Weapons filter ticked) with the filter icon ringed and magnified; below it the
+     same BEFORE | AFTER panels as v1, shorter; the title last. Rendered by: python tools\make_thumbnail.py --variant v2 -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1024px; height: 1024px; overflow: hidden; background: #0d0a07; }
+  .canvas {
+    position: relative; width: 1024px; height: 1024px;
+    background: radial-gradient(ellipse 80% 45% at 50% 18%, #2a1d10 0%, #0d0a07 75%);
+    font-family: 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  }
+  /* ---- the setting: formation card ---- */
+  .card {
+    position: absolute; left: 58px; top: 52px; width: 548px; height: 404px;
+    background: url('CARD_IMG') center / 100% 100% no-repeat;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,0.85));
+  }
+  .ring {               /* around the Throwing Weapons icon on the card; position set from the crop box */
+    position: absolute; left: RING_Lpx; top: RING_Tpx; width: 92px; height: 92px;
+    border: 5px solid #ffd76a; border-radius: 50%;
+    box-shadow: 0 0 18px 6px rgba(255, 205, 90, 0.85), inset 0 0 14px rgba(255, 205, 90, 0.6);
+  }
+  .leader {
+    position: absolute; height: 5px; background: #ffd76a; transform-origin: 0 50%;
+    left: LEAD_Xpx; top: LEAD_Ypx; width: LEAD_Wpx; transform: rotate(LEAD_Adeg);
+    box-shadow: 0 0 10px rgba(255, 205, 90, 0.8);
+  }
+  .zoom {
+    position: absolute; left: 676px; top: 66px; width: 290px; height: 290px; border-radius: 50%;
+    background: #2d1805 url('ICON_IMG') center / 100% 100% no-repeat;
+    border: 6px solid #ffd76a;
+    box-shadow: 0 0 34px 8px rgba(255, 205, 90, 0.55), 0 10px 30px rgba(0,0,0,0.8);
+  }
+  .zoomlabel {
+    position: absolute; left: 626px; width: 390px; top: 372px; text-align: center;
+    color: #e8c874; font-size: 46px; font-weight: 600; font-variant: small-caps; letter-spacing: 2px;
+    line-height: 1; text-shadow: 0 2px 6px rgba(0,0,0,0.95);
+  }
+  .zoomlabel b { color: #6fe07c; font-weight: 700; }
+  /* ---- BEFORE | AFTER ---- */
+  .panel {
+    position: absolute; top: 478px; width: 512px; height: 430px;
+    background-size: cover; background-position: center;
+    filter: brightness(1.02) contrast(1.06) saturate(1.1);
+  }
+  .panel.before { left: 0; background-image: url('PANEL_BEFORE'); }
+  .panel.after  { left: 512px; background-image: url('PANEL_AFTER'); }
+  .split {
+    position: absolute; top: 478px; left: 509px; width: 6px; height: 430px;
+    background: linear-gradient(to bottom, rgba(214,178,94,0.95) 0%, rgba(214,178,94,0.95) 75%, rgba(214,178,94,0) 100%);
+    box-shadow: 0 0 10px rgba(0,0,0,0.7);
+  }
+  .shade {
+    position: absolute; left: 0; right: 0; top: 478px; height: 430px;
+    background: linear-gradient(to bottom, rgba(13,10,7,0.9) 0%, rgba(0,0,0,0) 9%, rgba(0,0,0,0) 72%, rgba(13,10,7,0.85) 90%, rgba(13,10,7,1) 100%);
+  }
+  .vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 130% 110% at 50% 50%, rgba(0,0,0,0) 60%, rgba(13,10,7,0.6) 92%, rgba(13,10,7,0.9) 100%);
+  }
+  .frame {
+    position: absolute; inset: 22px;
+    border: 3px solid rgba(214, 178, 94, 0.85); border-radius: 26px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,0,0,0.35);
+  }
+  .tag {
+    position: absolute; top: 500px;
+    background: rgba(16, 12, 8, 0.88);
+    border: 2px solid rgba(214, 178, 94, 0.8); border-radius: 14px;
+    padding: 7px 20px 11px;
+    font-size: 42px; font-weight: 600; font-variant: small-caps; letter-spacing: 3px; line-height: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.55);
+  }
+  .tag.before { right: 536px; color: #ff6a5a; }
+  .tag.after  { right: 46px; color: #6fe07c; }
+  .titleblock { position: absolute; left: 0; right: 0; bottom: 50px; text-align: center; }
+  h1 {
+    color: #e8c874; font-size: 60px; font-weight: 600; letter-spacing: 3px;
+    font-variant: small-caps; line-height: 1; white-space: nowrap;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.95), 0 0 40px rgba(232, 200, 116, 0.28);
+  }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="panel before"></div>
+    <div class="panel after"></div>
+    <div class="split"></div>
+    <div class="shade"></div>
+    <div class="vignette"></div>
+    <div class="card"></div>
+    <div class="leader"></div>
+    <div class="ring"></div>
+    <div class="zoom"></div>
+    <div class="zoomlabel">Throwing <b>✓</b></div>
+    <div class="tag before">Before</div>
+    <div class="tag after">After</div>
+    <div class="frame"></div>
+    <div class="titleblock"><h1>Better Skirmisher Separation</h1></div>
+  </div>
+</body>
+</html>
