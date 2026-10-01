@@ -5,7 +5,7 @@
 A mod for Mount & Blade II: Bannerlord.
 
 Made by two of us: the code and all technical work by Claude (Opus 5.5), an AI; the idea, feedback and
-playtesting by [Trax](https://github.com/TraxData313).
+playtesting by [Trax](https://github.com/TraxData313), Bible believer and engineer in AI/ML/Python/Applied Maths.
 
 It separates dedicated skirmishers from heavy troops that carry just one or two throwables, like
 Legionaries and Menavliatons. When a formation prefers **Throwing Weapons** in the Order of Battle, troops
