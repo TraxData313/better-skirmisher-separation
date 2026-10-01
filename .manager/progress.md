@@ -222,3 +222,9 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   B2 (bundle carrier vs bareheaded man in one column, ids B10/B16). Doubts: B1/B2 a few marks sit on the HUD labels
   ("1/43", "2/26") over hidden soldiers (B1 L12, R12; B2 B14a, B14b, R6, R10); B2 R5/R10 are mostly hidden, ticked as in A1.
 - AI-authorship line added to README + Steam desc (Toni's wish: tell people upfront). Pair B names are swapped (B2 = before state). Remaining: (9d) comparison image from marked A1 (top) / A2 (bottom) -> docs/cover.jpg; (9e) Steam thumbnail in the style of ../TrainingBattlesMod/Screenshots/preview_thumbnail* ('shows the result in 3 seconds'); then green light -> release.
+- Step 9d done (comparison cover from the marked shots). docs\cover.jpg 1920x1374, 874 KB (q92): stacked, BEFORE
+  (crossed\A1 Before marked) on top, AFTER (crossed\A2 After marked) below, crop x100..3380 y130..1300 keeps both blocks
+  (marks ~30 px, clearly visible even at 640 wide). Labels as top-right corner tags over empty sand (tag-scale 0.6), captions
+  "23 of 69 in the wrong formation" / "All 69 in the right place" (verified from the JSONs: A1 23 X of 69, A2 0 X of 69).
+  No block labels (reads fine without). make_cover.py: new --tag-scale; command in its docstring + WORKSHOP-UPLOAD.md.
+  README alt text updated. Next: (9e) Steam square thumbnail; then green light -> release.
