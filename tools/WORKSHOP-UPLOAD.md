@@ -11,7 +11,14 @@ running and logged in.
    ```powershell
    python tools\make_cover.py "screenshots\crossed\A1 Before marked.jpg" "screenshots\crossed\A2 After marked.jpg" --crop 100 130 3380 1300 --layout stack --no-crop --label-pos tr --tag-scale 0.6 --width 1920 --no-title --captions "23 of 69 in the wrong formation" "All 69 in the right place"
    ```
-   Writes `docs\cover.jpg` (README image and Steam preview, under 1 MB; `--png` adds a lossless copy).
+   Writes `docs\cover.jpg` (README image, and an extra screenshot on the Workshop page; `--png` adds a lossless copy).
+
+   **Thumbnail** (the Workshop preview `WorkshopCreate.xml` uploads, square like TrainingBattles'):
+   ```powershell
+   python tools\make_thumbnail.py
+   ```
+   Renders `tools\preview_thumbnail.html` with headless Edge into `docs\thumbnail.jpg` (1024x1024, under
+   1 MB): BEFORE/AFTER of the Throwing Weapons block with enlarged marks, title and tagline below.
 
 2. **Package** a clean build:
    ```powershell
@@ -26,7 +33,8 @@ running and logged in.
    ```
 
 4. **On the item page** (Owner Controls): paste `tools\STEAM-DESCRIPTION.bbcode` as the description,
-   flip Private to Public, and add the Harmony required item. Put the Workshop link into `README.md`
+   flip Private to Public, and add the Harmony required item. Under "Add/edit images & videos" add
+   `docs\cover.jpg` (the stacked before/after comparison) as an extra screenshot. Put the Workshop link into `README.md`
    in place of `STEAM_WORKSHOP_URL`, and the item ID into `WorkshopUpdate.xml`.
 
 ## Uploader quirks

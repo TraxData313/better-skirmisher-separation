@@ -10,7 +10,8 @@
              SubModule.xml <Name> ("Better Skirmisher Separation"), not from this file. Judge success by
              "Item created. Item ID is ..." + "Uploading done!" in the output, not the exit code.
              Run tools\package.ps1 first (it fills dist\BetterSkirmisherSeparation) and
-             tools\make_cover.py (it writes docs\cover.jpg, under Steam's 1 MB preview limit).
+             tools\make_thumbnail.py (it writes docs\thumbnail.jpg, the square preview, under 1 MB).
+             The stacked comparison docs\cover.jpg goes on the item page by hand as an extra screenshot.
              NEVER run this file again after the item exists - use WorkshopUpdate.xml. -->
         <ModuleFolder Value="C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\dist\BetterSkirmisherSeparation"/>
         <ItemDescription Value="Separates dedicated skirmishers from heavy troops that carry just one or two throwables, like Legionaries and Menavliatons. When a formation prefers Throwing Weapons in the Order of Battle, troops are ranked by what they actually carry: two or more javelin stacks first, then one stack, then pila carriers. Optional MCM settings: on/off and the minimum throwables a troop needs to count. Requires Harmony."/>
@@ -20,7 +21,7 @@
             <Tag Value="Singleplayer" />
             <Tag Value="v1.4.8" />
         </Tags>
-        <Image Value="C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\docs\cover.jpg"/>
+        <Image Value="C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\docs\thumbnail.jpg"/>
         <Visibility Value="Private"/>
     </UpdateItem>
 </Tasks>
