@@ -6,11 +6,12 @@ running and logged in.
 
 ## Steps
 
-1. **Cover** (once, after the screenshots are in `docs\`):
+1. **Cover** (already built; redo only with new screenshots). The raw shots live in `screenshots\`
+   (gitignored). The published cover came from:
    ```powershell
-   python tools\make_cover.py docs\before.png docs\after.png
+   python tools\make_cover.py "screenshots\BEFORE 2.jpg" "screenshots\AFTER 2.jpg" --crop 1100 250 1920 1065 --layout side --no-title --captions "Heavy spearmen with 1-2 javelins" "Real javelin skirmishers"
    ```
-   Writes `docs\cover.png` (README) and `docs\cover.jpg` (Steam preview, under 1 MB).
+   Writes `docs\cover.jpg` (README image and Steam preview, under 1 MB; `--png` adds a lossless copy).
 
 2. **Package** a clean build:
    ```powershell

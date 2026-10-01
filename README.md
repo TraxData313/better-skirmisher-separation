@@ -1,6 +1,6 @@
 # Better Skirmisher Separation
 
-![Before and after](docs/cover.png)
+![Before and after: heavy spearmen leave the throwing formation, real skirmishers take their place](docs/cover.jpg)
 
 A mod for Mount & Blade II: Bannerlord.
 

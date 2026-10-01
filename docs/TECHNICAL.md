@@ -67,5 +67,5 @@ copied). Paths live in `Directory.Build.props`; override them in `Directory.Buil
 ## Release
 
 - `tools\package.ps1` builds Release and writes `dist\BetterSkirmisherSeparation_v<version>.zip`.
-- `tools\make_cover.py` builds `docs\cover.png` (and `docs\cover.jpg` for Steam) from two screenshots.
+- `tools\make_cover.py` builds `docs\cover.jpg` (README image and Steam preview) from two screenshots.
 - `tools\WORKSHOP-UPLOAD.md` has the Steam Workshop steps.

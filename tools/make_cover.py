@@ -1,13 +1,20 @@
-"""Builds the BEFORE / AFTER cover image from two screenshots.
+r"""Builds the BEFORE / AFTER cover image from two screenshots.
 
-    python tools\\make_cover.py [before] [after] [options]
+    python tools\make_cover.py [before] [after] [options]
 
-Defaults: docs\\before.* and docs\\after.* (any image extension), output docs\\cover.png for the README
-plus docs\\cover.jpg for the Steam Workshop preview (always kept under 1 MB).
+Defaults: docs\before.* and docs\after.* (any image extension), output docs\cover.jpg - used both by
+the README and as the Steam Workshop preview (always kept under 1 MB). --png also writes a lossless
+docs\cover.png beside it (not committed: a photo as PNG is ~2.7 MB).
 
 Landscape screenshots go side by side, portrait ones are stacked; both are scaled to the same height
 (or width). By default each panel is centre-cropped so the whole cover comes out 16:9, which is what
 the Workshop preview shows best; --focus moves the crop, --no-crop keeps the full screenshots.
+--crop X0 Y0 X1 Y1 first cuts the same region (source pixels) out of both screenshots, so the cover
+shows the part that changed instead of two shrunken full frames; --captions adds a line under each.
+
+The published docs\cover.jpg was built with (screenshots\ is gitignored, the raw shots stay local):
+
+    python tools\make_cover.py "screenshots\BEFORE 2.jpg" "screenshots\AFTER 2.jpg" --crop 1100 250 1920 1065 --layout side --no-title --captions "Heavy spearmen with 1-2 javelins" "Real javelin skirmishers"
 
 Needs Pillow (pip install pillow).
 """
@@ -76,6 +83,23 @@ def label(canvas: Image.Image, box: tuple[int, int, int, int], text: str, top: b
     canvas.alpha_composite(overlay)
 
 
+def caption(canvas: Image.Image, box: tuple[int, int, int, int], text: str) -> None:
+    """Smaller line at the bottom of the panel on a dark fade (also hides HUD bits in the corner)."""
+    x0, y0, x1, y1 = box
+    pw, ph = x1 - x0, y1 - y0
+    font = load_font(max(16, round(pw * 0.052)))
+    fade_h = round(font.size * 3.2)
+    overlay = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(overlay)
+    for i in range(fade_h):  # transparent -> dark, bottom-heavy
+        a = round(215 * min(1.0, (i / fade_h) * 1.6) ** 1.4)
+        d.line((x0, y1 - fade_h + i, x1 - 1, y1 - fade_h + i), fill=(0, 0, 0, a))
+    tw = d.textlength(text, font=font)
+    d.text((x0 + (pw - tw) / 2, y1 - font.size * 1.05), text, font=font, anchor="lm",
+           fill=(235, 225, 200, 255), stroke_width=max(1, font.size // 28), stroke_fill=(0, 0, 0, 220))
+    canvas.alpha_composite(overlay)
+
+
 def title_strip(canvas: Image.Image, text: str) -> None:
     w, h = canvas.size
     font = load_font(max(16, round(h * 0.035)))
@@ -92,21 +116,28 @@ def title_strip(canvas: Image.Image, text: str) -> None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Build docs\\cover.png (+ cover.jpg) from BEFORE / AFTER screenshots.")
+    ap = argparse.ArgumentParser(description="Build docs\\cover.jpg (+ optional .png) from BEFORE / AFTER screenshots.")
     ap.add_argument("before", nargs="?", help="before screenshot (default docs\\before.*)")
     ap.add_argument("after", nargs="?", help="after screenshot (default docs\\after.*)")
-    ap.add_argument("-o", "--out", default=str(DOCS / "cover.png"), help="output PNG (a .jpg is written beside it)")
+    ap.add_argument("-o", "--out", default=str(DOCS / "cover.jpg"), help="output JPG (default docs\\cover.jpg)")
+    ap.add_argument("--png", action="store_true", help="also write a lossless .png beside the .jpg")
     ap.add_argument("--width", type=int, default=1920, help="output width in pixels (default 1920)")
     ap.add_argument("--layout", choices=("auto", "side", "stack"), default="auto",
                     help="auto = side by side for landscape shots, stacked for portrait")
     ap.add_argument("--no-crop", action="store_true", help="keep the full screenshots (cover will not be 16:9)")
     ap.add_argument("--focus", type=float, default=0.5, help="crop position 0..1 (0 = left/top, default centre)")
+    ap.add_argument("--crop", type=int, nargs=4, metavar=("X0", "Y0", "X1", "Y1"),
+                    help="cut this region (source pixels) out of both screenshots first")
+    ap.add_argument("--captions", nargs=2, metavar=("C1", "C2"), help="small line at the bottom of each panel")
     ap.add_argument("--labels", nargs=2, default=("BEFORE", "AFTER"), metavar=("L1", "L2"))
     ap.add_argument("--no-title", action="store_true", help=f'leave out the small "{TITLE}" title')
     a = ap.parse_args()
 
     before = Image.open(a.before or find_default("before")).convert("RGB")
     after = Image.open(a.after or find_default("after")).convert("RGB")
+
+    if a.crop:
+        before, after = before.crop(tuple(a.crop)), after.crop(tuple(a.crop))
 
     portrait = (before.width / before.height + after.width / after.height) / 2 < 1
     side = a.layout == "side" or (a.layout == "auto" and not portrait)
@@ -140,17 +171,21 @@ def main() -> None:
 
     for box, text in zip(boxes, a.labels):
         label(canvas, box, text, top=True)
+    if a.captions:
+        for box, text in zip(boxes, a.captions):
+            caption(canvas, box, text)
     if not a.no_title:
         title_strip(canvas, TITLE)
 
     rgb = canvas.convert("RGB")
-    out = Path(a.out)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    rgb.save(out, optimize=True)
-    print(f"{out}  {rgb.width}x{rgb.height}  {out.stat().st_size // 1024} KB")
+    jpg = Path(a.out).with_suffix(".jpg")
+    jpg.parent.mkdir(parents=True, exist_ok=True)
+    if a.png:
+        png = jpg.with_suffix(".png")
+        rgb.save(png, optimize=True)
+        print(f"{png}  {rgb.width}x{rgb.height}  {png.stat().st_size // 1024} KB")
 
     # Steam preview: JPG, stepping quality (then size) down until it fits under 1 MB.
-    jpg = out.with_suffix(".jpg")
     img = rgb
     while True:
         for q in (92, 88, 84, 80, 75, 70):
