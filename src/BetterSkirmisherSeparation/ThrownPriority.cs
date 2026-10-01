@@ -16,10 +16,17 @@ namespace BetterSkirmisherSeparation
         public static void GetPriorityFunction(TroopTraitsMask filter, out Func<Agent, int> priorityFunc)
         {
             TroopFilteringUtilities.GetPriorityFunction(filter, out Func<Agent, int> vanilla);
-            var settings = Settings.Read(); // once per distribution, so MCM changes apply without a restart
-            priorityFunc = !settings.Enabled || (filter & TroopTraitsMask.Thrown) == 0
-                ? vanilla
-                : new GradedPriority(vanilla, settings.MinThrowables).Score;
+            priorityFunc = vanilla;
+            try
+            {
+                var settings = Settings.Read(); // once per distribution, so MCM changes apply without a restart
+                if (settings.Enabled && (filter & TroopTraitsMask.Thrown) != 0)
+                    priorityFunc = new GradedPriority(vanilla, settings.MinThrowables).Score;
+            }
+            catch (Exception e)
+            {
+                SubModule.LogOnce("GetPriorityFunction", e);
+            }
         }
 
         // Replaces the discarded `list2.OrderByDescending(p => p.ScoreToSeek)` inside the fill loop of
@@ -31,11 +38,18 @@ namespace BetterSkirmisherSeparation
         public static IOrderedEnumerable<FormationPocket> SortPockets(IEnumerable<FormationPocket> pockets, Func<FormationPocket, int> keySelector)
         {
             var sorted = pockets.OrderByDescending(keySelector);
-            if (pockets is List<FormationPocket> list && list.Exists(p => p.PriorityFunction?.Target is GradedPriority))
+            try
             {
-                var copy = sorted.ToList(); // stable, ties keep vanilla's order
-                list.Clear();
-                list.AddRange(copy);
+                if (pockets is List<FormationPocket> list && list.Exists(p => p.PriorityFunction?.Target is GradedPriority))
+                {
+                    var copy = sorted.ToList(); // stable, ties keep vanilla's order; built before the list is touched
+                    list.Clear();
+                    list.AddRange(copy);
+                }
+            }
+            catch (Exception e)
+            {
+                SubModule.LogOnce("SortPockets", e); // list untouched unless the copy succeeded
             }
             return sorted; // popped by the caller, never enumerated
         }
@@ -55,20 +69,23 @@ namespace BetterSkirmisherSeparation
 
             public int Score(Agent agent)
             {
-                int score = _vanilla(agent);
-                if (agent?.Character == null || agent.Equipment == null || !agent.HasThrownCached)
-                    return score;
-                if (!_tiers.TryGetValue(agent, out int tier))
+                int score = _vanilla(agent); // vanilla's own exceptions stay vanilla's
+                try
                 {
-                    try { tier = GetTier(agent.Equipment, _minThrowables); }
-                    catch (Exception e)
+                    if (agent?.Character == null || agent.Equipment == null || !agent.HasThrownCached)
+                        return score;
+                    if (!_tiers.TryGetValue(agent, out int tier))
                     {
-                        tier = TierTwoStacks; // vanilla score for this agent
-                        TaleWorlds.Library.Debug.Print("[BetterSkirmisherSeparation] tier failed: " + e.Message);
+                        tier = GetTier(agent.Equipment, _minThrowables);
+                        _tiers[agent] = tier;
                     }
-                    _tiers[agent] = tier;
+                    return score - TierTwoStacks + tier;
                 }
-                return score - TierTwoStacks + tier;
+                catch (Exception e)
+                {
+                    SubModule.LogOnce("Score", e);
+                    return score; // vanilla score for this agent
+                }
             }
         }
 

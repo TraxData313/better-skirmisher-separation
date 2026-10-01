@@ -121,3 +121,34 @@ Reference: ..\reference\game-decompiled (decompiled game), ..\TrainingBattlesMod
   OPEN: TrainingBattlesMod (and likely ImmersiveAI) have the same AttributeGlobalSettings-in-main-assembly pattern, so they
   would also fail to load without MCM - not touched here. In-game check still needed: MCM page appears, values persist.
 - Git: private repo github.com/TraxData313/better-skirmisher-separation (main). Pending: in-game test of OoB sorting + MCM page.
+
+## Phase 3: crash on custom battle launch (2026-10-01)
+7. [x] Diagnose + fix crash when pressing Launch on a custom battle (find crash report, root cause, fix, rebuild).
+- Step 7 done (crash on custom battle Launch). IT WAS OUR MOD.
+  Evidence: rgl_log_31632 ends at "----------Mission-AddTeam-Defender" (19:25:54, custom battle, right after EXECUTE START);
+  AddTeam-Attacker never printed; no managed text in rgl/ButterLib logs, crashes\ empty (user cancelled the dump). Windows
+  Application log 19:26:09, WER CLR20r3: P4 TaleWorlds.MountAndBlade, P7 0x11f2 (method token 0x060011f2), P8 IL 0x5e,
+  P9 System.NullReferenceException. Token resolved against the shipped DLL = MovementOrder..ctor(MovementOrderEnum), i.e.
+  `_tickTimer = new Timer(Mission.Current.CurrentTime, 0.5f)` with Mission.Current == null, called from MovementOrder's
+  static field initialisers (MovementOrderNull/Charge/Retreat/Stop/Advance/FallBack). No earlier session with this mod ever
+  reached a battle (all other battles today ran without BetterSkirmisherSeparation in the load order).
+  Root cause: we patched in OnSubModuleLoad. Harmony 2.4 / MonoMod detours by JIT-compiling the ORIGINAL
+  (RuntimeHelpers.PrepareMethod). Team.RearrangeFormationsAccordingToFilter reads MovementOrder.MovementOrderStop and
+  MovementOrder is beforefieldinit, so that JIT runs MovementOrder's .cctor at load time, when Mission.Current is null -> NRE,
+  swallowed by the JIT (so no warning from us), and the type is poisoned for the process: the first battle's Team/Formation
+  setup gets TypeInitializationException -> crash. Not the transpiler IL, not SortPockets, not scoring, not MCM.
+  Verified with a scratch net472 harness (scratchpad\harness) against the real DLLs + Bannerlord.Harmony's 0Harmony, with a
+  Harmony spy prefix on MovementOrder..ctor: patching RearrangeFormationsAccordingToFilter with ANY patch (our transpiler, an
+  identity transpiler, an empty prefix) fires the cctor from _PrepareMethod with Mission.Current null and afterwards
+  MovementOrderStop throws TypeInitializationException; patching only OrderController.TransferUnitWithPriorityFunction
+  does not.
+  Fix: SubModule patches in OnBeforeMissionBehaviorInitialize (first mission only, skipped while Mission.Current is null;
+  Mission.Initialize sets Current before AfterStart calls this hook, and teams/OOB come later), so the cctor runs with a
+  live mission exactly like vanilla's first touch. Harness re-run: nothing fires at OnSubModuleLoad or with Current null; at
+  the hook the cctor runs with Current set, all 6 statics build, MovementOrderStop OK, 1 transpiler on each target.
+  Safety net: ThrownPriority.GetPriorityFunction / GradedPriority.Score / SortPockets catch everything, fall back to the
+  vanilla func / vanilla score / untouched list, and log once (SubModule.LogOnce -> rgl log). Vanilla's own exceptions
+  (the vanilla priority func) are not swallowed. Build Release 0 warnings/0 errors, deployed.
+  Confidence: high (WER frame + reproduced mechanism + fix verified in harness); not yet confirmed in-game.
+  User test: launch a custom battle (and a campaign battle) -> no crash; in the Order of Battle tick Thrown on one infantry
+  formation and check skirmishers vs Legionaries; second battle in the same session also fine.
