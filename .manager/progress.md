@@ -228,3 +228,12 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   "23 of 69 in the wrong formation" / "All 69 in the right place" (verified from the JSONs: A1 23 X of 69, A2 0 X of 69).
   No block labels (reads fine without). make_cover.py: new --tag-scale; command in its docstring + WORKSHOP-UPLOAD.md.
   README alt text updated. Next: (9e) Steam square thumbnail; then green light -> release.
+- Step 9e done (Steam/mod thumbnail). docs\thumbnail.jpg 1024x1024, 318 KB, same family as TrainingBattles'
+  preview_thumbnail (gold frame, Palatino small caps over a dark fade, which was an HTML + render): BEFORE (red tag) |
+  AFTER (green tag) side by side, each the Throwing Weapons block of the unmarked A1/A2 with marks redrawn 2.0x from the
+  JSONs, gold split line; title "Better Skirmisher / Separation" on two lines, tagline "Skirmishers where they belong."
+  Checked at full size and 256 px: title, tags and red-vs-green all read. Build: python tools\make_thumbnail.py
+  (renders tools\preview_thumbnail.html with headless Edge; panels + 1024 PNG in screenshots\thumb\, gitignored).
+  WorkshopCreate.xml <Image> -> docs\thumbnail.jpg (WorkshopUpdate has no image, like TrainingBattles);
+  WORKSHOP-UPLOAD.md: thumbnail step + add docs\cover.jpg as an extra screenshot on the item page. cover.jpg unchanged.
+  Next: green light -> release.
