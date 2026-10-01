@@ -254,3 +254,9 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   visible in either thumbnail. Tagline -> 'Legionaries are not skirmishers anymore.' on v1; v2 now has it under the title
   (36 px italic, panels 430 -> 390 px, crop boxes trimmed to match) - small but legible at 256 px. No other doc quoted
   the old tagline. Copies in screenshots\thumbnail.jpg / thumbnail_v2.jpg.
+- 9g done (v2 count erased, tagline 'Legionaries are not skirmishers anymore.'). 9h: Toni prefers v1 layout; wants v3 = v1 + the ringed Throwing icon (small icon from v2's card, with gold ring) placed top-center over the BEFORE|AFTER divider. (Sketch only in chat, not on disk.)
+- Step 9h done (b52bc7e). Thumbnail v3: docs	humbnail_v3.jpg 1024x1024, 321 KB (copy screenshots	humbnail_v3.jpg) = v1 layout +
+  the Throwing filter icon (keyed off the B1 card onto its dark brown) on a 150 px disc with a glowing gold ring, top
+  centre on the split line between the tags. No label (reads clean without). Checked full size + 256 px; no total shown.
+  Build: python tools\make_thumbnail.py --variant v3 (template tools\preview_thumbnail_v3.html). WORKSHOP-UPLOAD.md
+  lists option 3; WorkshopCreate.xml unchanged (option 1). v1/v2 images unchanged.
