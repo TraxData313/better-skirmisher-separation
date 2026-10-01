@@ -3,15 +3,18 @@ r"""Builds the square Steam Workshop / mod thumbnail (1024x1024, under 1 MB).
     python tools\make_thumbnail.py                 # v1 -> docs\thumbnail.jpg    (BEFORE | AFTER, big title)
     python tools\make_thumbnail.py --variant v2    # v2 -> docs\thumbnail_v2.jpg (the formation card with the
                                                    #   Throwing Weapons filter ticked, then BEFORE | AFTER)
+    python tools\make_thumbnail.py --variant v3    # v3 -> docs\thumbnail_v3.jpg (v1 + the ringed Throwing filter
+                                                   #   icon top centre, on the split line)
 
 Style matches TrainingBattlesMod's preview_thumbnail (gold frame, Palatino small caps over a dark fade).
 1. Cuts the Throwing Weapons block out of the unmarked screenshots "A1 Before" / "A2 After" and redraws
    their marks (screenshots\marks\*.marks.json) 2-2.3x bigger, so the red X's and green ticks still
    read on a 256 px Workshop tile. Panels go to screenshots\thumbnail build\ (gitignored, like all screenshots).
    v2 also cuts the Order of Battle card of formation 2 (Throwing Weapons filter ticked) out of "B1 Before"
-   (identical in B2) plus a close-up of its filter icon, which the HTML rings and magnifies. The "26 / <total>"
+   (identical in B2) plus a close-up of its filter icon, which the HTML rings and magnifies.
+   v3 is v1's layout plus that filter icon alone (sand, border and neighbour icons removed), drawn on a dark disc. The "26 / <total>"
    count above the slider is painted out with the card's own background (the army total is not wanted in public images).
-2. Renders tools\preview_thumbnail.html (v2: preview_thumbnail_v2.html) with headless Edge (or Chrome) to a 1024x1024 PNG.
+2. Renders tools\preview_thumbnail.html (v2/v3: preview_thumbnail_v2.html / _v3.html) with headless Edge (or Chrome) to a 1024x1024 PNG.
 3. Saves docs\thumbnail.jpg, stepping JPEG quality down until it fits under 1 MB.
 
 docs\cover.jpg (the stacked BEFORE/AFTER comparison) is separate - see make_cover.py.
@@ -56,6 +59,7 @@ VARIANTS = {
         },
     },
 }
+VARIANTS["v3"] = {**VARIANTS["v1"], "html": "preview_thumbnail_v3.html", "out": "thumbnail_v3.jpg"}
 
 # v2 setting card: formation 2 in the Order of Battle (3440x1440 shot), its Throwing Weapons icon,
 # and where the HTML draws them (keep in sync with .card / .zoom in preview_thumbnail_v2.html)
@@ -72,6 +76,11 @@ ERASE_SRC_X = 254
 CARD_POS, CARD_SIZE = (58, 52), (548, 404)
 RING = 92
 ZOOM_CENTER, ZOOM_R = (821, 211), 145
+# v3 badge: the icon alone (javelin tip to tick, clear of the card's gold border at x 415+ and the icons above/below),
+# keyed onto the card's dark brown; drawn ICON_SIZE px wide (BADGE_SRC source px) inside the 150 px disc of _v3.html
+BADGE_BOX = (378, 527, 413, 564)
+BADGE_BG = (45, 24, 5)
+BADGE_SRC, ICON_SIZE = 40, 140
 
 BROWSERS = [
     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -148,6 +157,20 @@ def card_fill(html: str) -> str:
     return html
 
 
+def badge_fill(html: str) -> str:
+    """v3: the Throwing filter icon on a clean dark square (pixels close to the card colour become exactly it)."""
+    shot = Image.open(SHOTS / "originals" / CARD_SHOT).convert("RGB")
+    bg = Image.new("RGB", (BADGE_SRC, BADGE_SRC), BADGE_BG)
+    crop = shot.crop(BADGE_BOX)
+    dist = ImageChops.difference(crop, Image.new("RGB", crop.size, BADGE_BG)).convert("L")
+    mask = dist.point(lambda v: 0 if v < 22 else min(255, (v - 22) * 6))
+    half = BADGE_SRC // 2
+    bg.paste(crop, (BADGE_BOX[0] - (ICON_CENTER[0] - half), BADGE_BOX[1] - (ICON_CENTER[1] - half)), mask)
+    icon = WORK / "thumb_badge.png"
+    bg.resize((320, 320), Image.LANCZOS).filter(ImageFilter.UnsharpMask(radius=3, percent=120, threshold=2)).save(icon)
+    return html.replace("ICON_IMG", icon.as_uri()).replace("ICON_SIZE", str(ICON_SIZE))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--variant", choices=sorted(VARIANTS), default="v1")
@@ -162,6 +185,8 @@ def main() -> None:
     html = html.replace("PANEL_BEFORE", paths["before"].as_uri()).replace("PANEL_AFTER", paths["after"].as_uri())
     if "CARD_IMG" in html:
         html = card_fill(html)
+    elif "ICON_IMG" in html:
+        html = badge_fill(html)
     page = WORK / f"thumbnail{suffix}.html"
     page.write_text(html, encoding="utf-8")
 
