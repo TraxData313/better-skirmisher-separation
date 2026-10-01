@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/BUTR/Bannerlord.XmlSchemas/master/SubModule.xsd">
+  <Id value="BetterSkirmisherSeparation" />
+  <Name value="Better Skirmisher Separation" />
+  <Version value="v1.0.0" />
+  <DefaultModule value="false" />
+  <ModuleCategory value="Singleplayer" />
+  <ModuleType value="Community" />
+  <DependedModules>
+    <DependedModule Id="Bannerlord.Harmony" />
+    <DependedModule Id="Native" />
+  </DependedModules>
+  <DependedModuleMetadatas>
+    <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" />
+    <DependedModuleMetadata id="Native" order="LoadBeforeThis" />
+    <!-- Mod Configuration Menu: optional. Load it before us so the settings page registers, but never
+         require it; without MCM the mod runs on its defaults (enabled, minimum 1 throwable). -->
+    <DependedModuleMetadata id="Bannerlord.MBOptionScreen" order="LoadBeforeThis" optional="true" />
+  </DependedModuleMetadatas>
+  <SubModules>
+    <SubModule>
+      <Name value="Better Skirmisher Separation" />
+      <DLLName value="BetterSkirmisherSeparation.dll" />
+      <SubModuleClassType value="BetterSkirmisherSeparation.SubModule" />
+      <Tags />
+    </SubModule>
+  </SubModules>
+</Module>
