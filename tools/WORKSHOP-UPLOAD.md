@@ -20,6 +20,14 @@ running and logged in.
    Renders `tools\preview_thumbnail.html` with headless Edge into `docs\thumbnail.jpg` (1024x1024, under
    1 MB): BEFORE/AFTER of the Throwing Weapons block with enlarged marks, title and tagline below.
 
+   Two thumbnails to choose from (both 1024x1024, under 1 MB); `WorkshopCreate.xml` points at option 1:
+   - **Option 1** `docs\thumbnail.jpg` (`python tools\make_thumbnail.py`): BEFORE | AFTER, big title.
+   - **Option 2** `docs\thumbnail_v2.jpg` (`python tools\make_thumbnail.py --variant v2`, template
+     `tools\preview_thumbnail_v2.html`): the Order of Battle card of formation 2 with the Throwing filter
+     ringed and magnified ("Throwing ✓"), then BEFORE (Legionaries, red X) | AFTER (all javelin throwers).
+   To use option 2, set `<Image>` in `WorkshopCreate.xml` to `docs\thumbnail_v2.jpg`; the other one can go
+   up as an extra screenshot on the item page.
+
 2. **Package** a clean build:
    ```powershell
    powershell -ExecutionPolicy Bypass -File tools\package.ps1
