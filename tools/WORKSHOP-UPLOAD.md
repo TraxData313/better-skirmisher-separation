@@ -9,7 +9,7 @@ running and logged in.
 1. **Cover** (already built; redo only with new screenshots). The raw shots live in `screenshots\`
    (gitignored). The published cover came from:
    ```powershell
-   python tools\make_cover.py "screenshots\A1 Before.jpg" "screenshots\A2 After.jpg" --crop 1960 330 3420 1290 --layout stack --no-crop --label-pos tr --width 1460 --no-title --captions "Legionaries / Menavliatons with 1-2 pila" "Real javelin skirmishers"
+   python tools\make_cover.py "screenshots\crossed\A1 Before marked.jpg" "screenshots\crossed\A2 After marked.jpg" --crop 100 130 3380 1300 --layout stack --no-crop --label-pos tr --tag-scale 0.6 --width 1920 --no-title --captions "23 of 69 in the wrong formation" "All 69 in the right place"
    ```
    Writes `docs\cover.jpg` (README image and Steam preview, under 1 MB; `--png` adds a lossless copy).
 

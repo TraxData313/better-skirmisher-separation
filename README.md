@@ -1,6 +1,6 @@
 # Better Skirmisher Separation
 
-![Before and after: heavy spearmen leave the throwing formation, real skirmishers take their place](docs/cover.jpg)
+![Before and after: red X = soldier in the wrong formation, green tick = the right one. Before, 23 of 69 are misplaced; after, none](docs/cover.jpg)
 
 A mod for Mount & Blade II: Bannerlord.
 

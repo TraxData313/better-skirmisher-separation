@@ -12,14 +12,15 @@ the Workshop preview shows best; --focus moves the crop, --no-crop keeps the ful
 --crop X0 Y0 X1 Y1 first cuts the same region (source pixels) out of both screenshots, so the cover
 shows the part that changed instead of two shrunken full frames; --captions adds a line under each.
 --layout stack --no-crop puts BEFORE on top of AFTER at the --crop aspect; --label-pos tl/tr puts each
-label (and its caption) in a small corner tag instead of a band across the panel.
+label (and its caption) in a small corner tag instead of a band across the panel; --tag-scale resizes it.
 
 The published docs\cover.jpg was built with (screenshots\ is gitignored, the raw shots stay local):
 
-    python tools\make_cover.py "screenshots\A1 Before.jpg" "screenshots\A2 After.jpg" --crop 1960 330 3420 1290 --layout stack --no-crop --label-pos tr --width 1460 --no-title --captions "Legionaries / Menavliatons with 1-2 pila" "Real javelin skirmishers"
+    python tools\make_cover.py "screenshots\crossed\A1 Before marked.jpg" "screenshots\crossed\A2 After marked.jpg" --crop 100 130 3380 1300 --layout stack --no-crop --label-pos tr --tag-scale 0.6 --width 1920 --no-title --captions "23 of 69 in the wrong formation" "All 69 in the right place"
 
-(3440x1440 shots of the same desert battle; the crop is the right-hand block = the Throwing Weapons
-formation. Pair B of the screenshots is not used.)
+(3440x1440 shots of the same desert battle, marked by tools\mark_soldiers.py: red X = soldier in the
+wrong formation, green tick = right one. The crop keeps both blocks - infantry left, Throwing Weapons
+right; BEFORE has 11 + 12 = 23 X of 69, AFTER none. Pair B of the screenshots is not used.)
 
 Needs Pillow (pip install pillow).
 """
@@ -88,12 +89,13 @@ def label(canvas: Image.Image, box: tuple[int, int, int, int], text: str, top: b
     canvas.alpha_composite(overlay)
 
 
-def corner_tag(canvas: Image.Image, box: tuple[int, int, int, int], text: str, sub: str | None, right: bool) -> None:
+def corner_tag(canvas: Image.Image, box: tuple[int, int, int, int], text: str, sub: str | None, right: bool,
+               scale: float = 1.0) -> None:
     """Label (+ optional caption line under it) in a dark rounded tag in a top corner of the panel, so
     the middle of the shot - the troops - stays uncovered."""
     x0, y0, x1, y1 = box
     pw = x1 - x0
-    font = load_font(max(24, round(pw * 0.062)))
+    font = load_font(max(24, round(pw * 0.062 * scale)))
     sfont = load_font(max(14, round(font.size * 0.42)))
     overlay = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(overlay)
@@ -162,6 +164,8 @@ def main() -> None:
     ap.add_argument("--label-pos", choices=("band", "tl", "tr"), default="band",
                     help="band = full-width band on top of each panel (default); tl / tr = compact tag in the "
                          "top-left / top-right corner, with the --captions line inside the tag")
+    ap.add_argument("--tag-scale", type=float, default=1.0,
+                    help="size of the corner tags relative to the default (e.g. 0.7 on a wide panel)")
     ap.add_argument("--no-title", action="store_true", help=f'leave out the small "{TITLE}" title')
     a = ap.parse_args()
 
@@ -204,7 +208,7 @@ def main() -> None:
     if a.label_pos != "band":
         subs = a.captions or (None, None)
         for box, text, sub in zip(boxes, a.labels, subs):
-            corner_tag(canvas, box, text, sub, right=a.label_pos == "tr")
+            corner_tag(canvas, box, text, sub, right=a.label_pos == "tr", scale=a.tag_scale)
     else:
         for box, text in zip(boxes, a.labels):
             label(canvas, box, text, top=True)
