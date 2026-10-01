@@ -152,3 +152,28 @@ Reference: ..\reference\game-decompiled (decompiled game), ..\TrainingBattlesMod
   Confidence: high (WER frame + reproduced mechanism + fix verified in harness); not yet confirmed in-game.
   User test: launch a custom battle (and a campaign battle) -> no crash; in the Order of Battle tick Thrown on one infantry
   formation and check skirmishers vs Legionaries; second battle in the same session also fine.
+## Phase 4: publishing prep (2026-10-01) — user is testing step 7 in-game meanwhile
+User's spec: GitHub README is the main page — few lines: Bannerlord mod; separates dedicated skirmishers
+from heavy troops with 1-2 throwables (Legionaries, Menavliatons); how in few words; install = download from
+GitHub Release or Steam Workshop (link). Steam description similar, ending "or download it from GitHub here" -> README.
+Fully free/open license like his other mods, no wordy legal text; one line: to thank me, open my GitHub profile
+and read my top pinned (literally "read my top pinned"). Cover image = two user screenshots BEFORE/AFTER with labels.
+Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> must be made public for downloads (ask user).
+8. [x] Prep: README, LICENSE, Steam description text, release packaging script (zip), cover-image script
+       (waits for screenshots), Steam workshop uploader config mirroring TrainingBattlesMod. No publishing.
+9. [ ] When screenshots arrive: build cover. Then (user approval) make repo public, cut GitHub release, Steam upload.
+- Step 8 done (publishing prep, nothing published). README.md = short main page (cover docs/cover.png placeholder,
+  install via GitHub Releases latest / Steam STEAM_WORKSHOP_URL placeholder, Harmony required, MCM optional, Unlicense
+  line, "read my top pinned" thank-you, <details> "How it works" -> docs/TECHNICAL.md which holds the old tiers/settings/
+  how-it-works/limits/build text + release notes). LICENSE = Unlicense (copied from TrainingBattlesMod).
+  tools/: STEAM-DESCRIPTION.bbcode (ends "Not on Steam? Download it from GitHub"), package.ps1 (reads version from
+  SubModule.xml, builds Release with DeployToGame=false, dist\BetterSkirmisherSeparation + zip with forward-slash entries,
+  refuses to overwrite an existing zip without -Force; zip verified = BetterSkirmisherSeparation/SubModule.xml +
+  bin/Win64_Shipping_Client/BetterSkirmisherSeparation.dll, no pdb, left in dist), WorkshopCreate.xml (dist folder,
+  image docs\cover.jpg, tags Utility/Native/Singleplayer/v1.4.8, Private), WorkshopUpdate.xml (ItemId ITEM_ID placeholder),
+  WORKSHOP-UPLOAD.md, make_cover.py (Pillow 12.3 present; side-by-side for landscape / stacked for portrait, centre-crop to
+  16:9 by default, --focus/--no-crop/--layout/--labels/--no-title; writes docs\cover.png for README + docs\cover.jpg <1MB
+  for Steam; tested on dummy images in scratchpad, both layouts, jpg 951 KB from noise). preview_thumbnail.html not
+  mirrored (make_cover.py replaces it). steam_appid.txt (261550) created locally, gitignored like TrainingBattles.
+  Commit eb1ac04 pushed. Next: step 9 (screenshots -> docs\before.png/after.png -> make_cover; user approval for public
+  repo, GitHub release with the dist zip, Workshop upload).
