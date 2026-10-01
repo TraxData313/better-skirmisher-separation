@@ -34,7 +34,7 @@ running and logged in.
 
 4. **On the item page** (Owner Controls): paste `tools\STEAM-DESCRIPTION.bbcode` as the description,
    flip Private to Public, and add the Harmony required item. Under "Add/edit images & videos" add
-   `docs\cover.jpg` (the stacked before/after comparison) as an extra screenshot. Put the Workshop link into `README.md`
+   `docs\cover.jpg` (the stacked before/after comparison) as the first screenshot, right after the thumbnail. Put the Workshop link into `README.md`
    in place of `STEAM_WORKSHOP_URL`, and the item ID into `WorkshopUpdate.xml`.
 
 ## Uploader quirks
