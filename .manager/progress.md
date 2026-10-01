@@ -260,3 +260,4 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   centre on the split line between the tags. No label (reads clean without). Checked full size + 256 px; no total shown.
   Build: python tools\make_thumbnail.py --variant v3 (template tools\preview_thumbnail_v3.html). WORKSHOP-UPLOAD.md
   lists option 3; WorkshopCreate.xml unchanged (option 1). v1/v2 images unchanged.
+- GO LIVE 2026-10-01: Toni chose thumbnail v3 (WorkshopCreate preview). Repo made public, release v1.0.0 with dist zip. Remaining: Toni uploads to Steam (tools/WORKSHOP-UPLOAD.md), then fill STEAM_WORKSHOP_URL in README + item ID in WorkshopUpdate.xml.
