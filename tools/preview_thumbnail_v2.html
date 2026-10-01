@@ -2,7 +2,7 @@
 <!-- Steam Workshop / mod thumbnail v2, 1024x1024: "the setting -> BEFORE -> AFTER" story.
      Same family as preview_thumbnail.html (gold frame, Palatino small caps, dark fade). Top: the Order of Battle
      card of formation 2 (Throwing Weapons filter ticked) with the filter icon ringed and magnified; below it the
-     same BEFORE | AFTER panels as v1, shorter; the title last. Rendered by: python tools\make_thumbnail.py --variant v2 -->
+     same BEFORE | AFTER panels as v1, shorter; the title and tagline last. Rendered by: python tools\make_thumbnail.py --variant v2 -->
 <html>
 <head>
 <meta charset="utf-8">
@@ -44,19 +44,19 @@
   .zoomlabel b { color: #6fe07c; font-weight: 700; }
   /* ---- BEFORE | AFTER ---- */
   .panel {
-    position: absolute; top: 478px; width: 512px; height: 430px;
+    position: absolute; top: 478px; width: 512px; height: 390px;
     background-size: cover; background-position: center;
     filter: brightness(1.02) contrast(1.06) saturate(1.1);
   }
   .panel.before { left: 0; background-image: url('PANEL_BEFORE'); }
   .panel.after  { left: 512px; background-image: url('PANEL_AFTER'); }
   .split {
-    position: absolute; top: 478px; left: 509px; width: 6px; height: 430px;
+    position: absolute; top: 478px; left: 509px; width: 6px; height: 390px;
     background: linear-gradient(to bottom, rgba(214,178,94,0.95) 0%, rgba(214,178,94,0.95) 75%, rgba(214,178,94,0) 100%);
     box-shadow: 0 0 10px rgba(0,0,0,0.7);
   }
   .shade {
-    position: absolute; left: 0; right: 0; top: 478px; height: 430px;
+    position: absolute; left: 0; right: 0; top: 478px; height: 390px;
     background: linear-gradient(to bottom, rgba(13,10,7,0.9) 0%, rgba(0,0,0,0) 9%, rgba(0,0,0,0) 72%, rgba(13,10,7,0.85) 90%, rgba(13,10,7,1) 100%);
   }
   .vignette {
@@ -79,11 +79,15 @@
   }
   .tag.before { right: 536px; color: #ff6a5a; }
   .tag.after  { right: 46px; color: #6fe07c; }
-  .titleblock { position: absolute; left: 0; right: 0; bottom: 50px; text-align: center; }
+  .titleblock { position: absolute; left: 0; right: 0; bottom: 44px; text-align: center; }
   h1 {
     color: #e8c874; font-size: 60px; font-weight: 600; letter-spacing: 3px;
     font-variant: small-caps; line-height: 1; white-space: nowrap;
     text-shadow: 0 3px 10px rgba(0,0,0,0.95), 0 0 40px rgba(232, 200, 116, 0.28);
+  }
+  .tagline {
+    margin-top: 10px; color: #f0e4c8; font-size: 36px; font-style: italic; letter-spacing: 0.5px; line-height: 1;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.95);
   }
 </style>
 </head>
@@ -102,7 +106,7 @@
     <div class="tag before">Before</div>
     <div class="tag after">After</div>
     <div class="frame"></div>
-    <div class="titleblock"><h1>Better Skirmisher Separation</h1></div>
+    <div class="titleblock"><h1>Better Skirmisher Separation</h1><div class="tagline">Legionaries are not skirmishers anymore.</div></div>
   </div>
 </body>
 </html>

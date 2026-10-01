@@ -8,8 +8,9 @@ Style matches TrainingBattlesMod's preview_thumbnail (gold frame, Palatino small
 1. Cuts the Throwing Weapons block out of the unmarked screenshots "A1 Before" / "A2 After" and redraws
    their marks (screenshots\marks\*.marks.json) 2-2.3x bigger, so the red X's and green ticks still
    read on a 256 px Workshop tile. Panels go to screenshots\thumbnail build\ (gitignored, like all screenshots).
-   v2 also cuts the Order of Battle card of formation 2 (26 / 69, Throwing Weapons filter ticked) out of
-   "B1 Before" (identical in B2) plus a close-up of its filter icon, which the HTML rings and magnifies.
+   v2 also cuts the Order of Battle card of formation 2 (Throwing Weapons filter ticked) out of "B1 Before"
+   (identical in B2) plus a close-up of its filter icon, which the HTML rings and magnifies. The "26 / <total>"
+   count above the slider is painted out with the card's own background (the army total is not wanted in public images).
 2. Renders tools\preview_thumbnail.html (v2: preview_thumbnail_v2.html) with headless Edge (or Chrome) to a 1024x1024 PNG.
 3. Saves docs\thumbnail.jpg, stepping JPEG quality down until it fits under 1 MB.
 
@@ -48,10 +49,10 @@ VARIANTS = {
         },
     },
     "v2": {
-        "html": "preview_thumbnail_v2.html", "out": "thumbnail_v2.jpg", "panel": (512, 430), "mark_scale": 2.3,
+        "html": "preview_thumbnail_v2.html", "out": "thumbnail_v2.jpg", "panel": (512, 390), "mark_scale": 2.3,
         "panels": {
-            "before": ("A1 Before.jpg", "A1 Before.marks.json", (1960, 350, 3110, 1316)),
-            "after": ("A2 After.jpg", "A2 After.marks.json", (1975, 320, 3125, 1286)),
+            "before": ("A1 Before.jpg", "A1 Before.marks.json", (1960, 395, 3110, 1271)),
+            "after": ("A2 After.jpg", "A2 After.marks.json", (1975, 365, 3125, 1241)),
         },
     },
 }
@@ -64,6 +65,10 @@ ICON_BOX = (376, 524, 418, 566)        # square around the thrower icon + its gr
 ICON_CENTER = (397, 545)
 CARD_BODY = (20, 426, 420, 694)        # the card body inside its gold border (tabs sit above it)
 MAGENTA = (255, 0, 255)
+# the "26 / <total>" label above the slider and its drop shadow, cloned over from the empty strip to its right
+# (rows stop above the slider handle, which pokes up at x 167..181, and above the bar, which starts at y 497)
+CARD_ERASE = [(164, 464, 182, 490), (182, 464, 250, 497)]
+ERASE_SRC_X = 254
 CARD_POS, CARD_SIZE = (58, 52), (548, 404)
 RING = 92
 ZOOM_CENTER, ZOOM_R = (821, 211), 145
@@ -109,9 +114,17 @@ def cut_card(img: Image.Image) -> Image.Image:
     return out
 
 
+def erase_count(shot: Image.Image) -> Image.Image:
+    """Paints out the slider's "26 / <total>" label by cloning the plain card background from the same rows."""
+    out = shot.copy()
+    for x0, y0, x1, y1 in CARD_ERASE:
+        out.paste(shot.crop((ERASE_SRC_X, y0, ERASE_SRC_X + x1 - x0, y1)), (x0, y0))
+    return out
+
+
 def card_fill(html: str) -> str:
     """v2: writes the card + icon crops and fills the ring / leader-line positions into the template."""
-    shot = Image.open(SHOTS / "originals" / CARD_SHOT).convert("RGB")
+    shot = erase_count(Image.open(SHOTS / "originals" / CARD_SHOT).convert("RGB"))
     card = WORK / "thumb_card.png"
     cut_card(shot.crop(CARD_BOX)).resize(CARD_SIZE, Image.LANCZOS).save(card)
     icon = WORK / "thumb_icon.png"
