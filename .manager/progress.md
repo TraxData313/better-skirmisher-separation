@@ -202,3 +202,12 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   3420 1290 --layout stack --no-crop --label-pos tr --width 1460 --no-title --captions "Legionaries / Menavliatons with
   1-2 pila" "Real javelin skirmishers". docs\cover.jpg 1460x1923 (~3:4 portrait) 773 KB; overwrote the old one (no other
   cover files in docs). Steam square thumbnails will centre-crop it.
+- Step 9c (in progress): user marked a screenshot by hand (screenshots/crossed/_toni_marked_example.webp): red X = soldier in the wrong formation, tick = right one. Wants a trial: one picture with every soldier marked (red X, GREEN tick) saved in screenshots/crossed. If approved: mark all 4 shots and rebuild the comparison cover from them.
+- Step 9c trial done: source of Toni's example = "A1 Before.jpg" (example = crop x134..3344 y296..1301 at 1/1.605; screenshots
+  are 3440x1440). Rule (matches his marks): javelin bundle on the back = skirmisher, armored or not. Left (infantry, kite
+  shields) block: bundle carriers X, everyone else tick. Right (Throwing Weapons) block: Legionaries (pennoned spears,
+  lamellar/pteruges) + silver-scale Menavliatons X; bundle carriers (purple quilted/turban, brown vests, hooded) tick.
+  Counts: left 43 = 11 X + 32 tick; right 26 = 12 X + 14 tick (69 total). Files: screenshots\crossed\A1 Before.marks.json
+  (ids L*/B*/R*, size by depth 46/52/58), output screenshots\crossed\A1 Before marked.jpg (3440x1440, q92), both gitignored.
+  Tool: python tools\mark_soldiers.py IMAGE MARKS.json [-o OUT] [--scale] (commit 70c54e4). Next: user approval -> mark
+  A2/B1/B2 the same way, rebuild cover.
