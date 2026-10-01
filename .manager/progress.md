@@ -120,3 +120,4 @@ Reference: ..\reference\game-decompiled (decompiled game), ..\TrainingBattlesMod
   untouched == vanilla; tier 0 score = vanilla - 10 == a non-thrower's score.
   OPEN: TrainingBattlesMod (and likely ImmersiveAI) have the same AttributeGlobalSettings-in-main-assembly pattern, so they
   would also fail to load without MCM - not touched here. In-game check still needed: MCM page appears, values persist.
+- Git: private repo github.com/TraxData313/better-skirmisher-separation (main). Pending: in-game test of OoB sorting + MCM page.
