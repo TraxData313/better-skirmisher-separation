@@ -248,3 +248,9 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   --variant v2 (template tools\preview_thumbnail_v2.html); v1 rebuild byte-identical. WorkshopCreate.xml still uses
   docs\thumbnail.jpg; WORKSHOP-UPLOAD.md lists both options. Commits e919e40 + doc note.
 - Comparison rebuilt without captions (Toni: no '69' anywhere — troop size 70 minus the general made it 69 by accident; avoid that number in all public images/text). 9g next: v2 card shows '26 / 69' -> remove the count; tagline -> 'Legionaries are not skirmishers anymore.'
+- Step 9g done (f5f8205). v2 card: the slider's '26 / <total>' label is painted out in make_thumbnail.py (erase_count:
+  clones the plain card background from the strip to its right, stops above the slider handle and bar) - checked at 6x
+  zoom and 256 px, no smudge; top-left '26' kept (it is the formation's own count, reads fine alone). No other total
+  visible in either thumbnail. Tagline -> 'Legionaries are not skirmishers anymore.' on v1; v2 now has it under the title
+  (36 px italic, panels 430 -> 390 px, crop boxes trimmed to match) - small but legible at 256 px. No other doc quoted
+  the old tagline. Copies in screenshots\thumbnail.jpg / thumbnail_v2.jpg.
