@@ -211,3 +211,13 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   (ids L*/B*/R*, size by depth 46/52/58), output screenshots\crossed\A1 Before marked.jpg (3440x1440, q92), both gitignored.
   Tool: python tools\mark_soldiers.py IMAGE MARKS.json [-o OUT] [--scale] (commit 70c54e4). Next: user approval -> mark
   A2/B1/B2 the same way, rebuild cover.
+- 9c trial approved by Toni. Next: mark A2 After, B1 Before, B2 After the same way into screenshots/crossed. Toni's own hand-marked one is in 'screenshots/crossed toni manual'.
+- 9c all 4 marked (screenshots\crossed\<name> marked.jpg 3440x1440 q92 + <name>.marks.json, same tool/sizes 46/52/58 by y,
+  gitignored). Toni's manual A1 == our A1: all 69 marks match (same soldiers, same X/tick), so A1 unchanged.
+  A2 After: left = infantry, right = Throwing; left 43 = 0 X + 43 tick, right 26 = 0 X + 26 tick (all bundle skirmishers).
+  B1 Before: left (formation 1, 43) = infantry, right (formation 2, 26) = Throwing; 0 X: left 43 tick, right 26 tick.
+  B2 After: same blocks; left 43 = 11 X (bundle carriers) + 32 tick, right 26 = 12 X (Legionaries/Menavliatons) + 14 tick.
+  VERDICT pair B: names swapped. B1 content = A2 (after state, same slots), B2 content = A1 (before state, same slots).
+  Files not renamed. B marks were seeded by a homography from A2->B1 / A1->B2 then checked/fixed by eye; one swap fixed in
+  B2 (bundle carrier vs bareheaded man in one column, ids B10/B16). Doubts: B1/B2 a few marks sit on the HUD labels
+  ("1/43", "2/26") over hidden soldiers (B1 L12, R12; B2 B14a, B14b, R6, R10); B2 R5/R10 are mostly hidden, ticked as in A1.
