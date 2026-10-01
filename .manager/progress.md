@@ -221,3 +221,4 @@ Mod zip goes on a GitHub Release, not committed. NOTE: repo is private now -> mu
   Files not renamed. B marks were seeded by a homography from A2->B1 / A1->B2 then checked/fixed by eye; one swap fixed in
   B2 (bundle carrier vs bareheaded man in one column, ids B10/B16). Doubts: B1/B2 a few marks sit on the HUD labels
   ("1/43", "2/26") over hidden soldiers (B1 L12, R12; B2 B14a, B14b, R6, R10); B2 R5/R10 are mostly hidden, ticked as in A1.
+- AI-authorship line added to README + Steam desc (Toni's wish: tell people upfront). Pair B names are swapped (B2 = before state). Remaining: (9d) comparison image from marked A1 (top) / A2 (bottom) -> docs/cover.jpg; (9e) Steam thumbnail in the style of ../TrainingBattlesMod/Screenshots/preview_thumbnail* ('shows the result in 3 seconds'); then green light -> release.
