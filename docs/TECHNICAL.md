@@ -12,6 +12,7 @@ actually carry, so the real skirmishers fill the formation first.
 | 2+ proper throwing stacks (javelins, throwing axes, throwing knives) | 10 |
 | 1 proper stack | 7 |
 | Only pila / heavy throwing spears (thrown as a secondary use) | 3 |
+| Only throwing stones (every vanilla peasant kit has a stack) | 1 |
 | Nothing throwable | 0 |
 
 A "proper stack" is an item whose primary use is a consumable thrown weapon holding more than one

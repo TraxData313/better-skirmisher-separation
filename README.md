@@ -9,7 +9,7 @@ playtesting by [Trax](https://github.com/TraxData313), Bible believer and engine
 
 It separates dedicated skirmishers from heavy troops that carry just one or two throwables, like
 Legionaries and Menavliatons. When a formation prefers **Throwing Weapons** in the Order of Battle, troops
-are ranked by what they actually carry: two or more javelin stacks first, then one stack, then pila carriers.
+are ranked by what they actually carry: two or more javelin stacks first, then one stack, then pila carriers, and last peasants with throwing stones.
 
 **Settings** (optional, with MCM): turn it on or off, and set the minimum throwables a troop needs to count.
 

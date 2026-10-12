@@ -11,6 +11,7 @@ namespace BetterSkirmisherSeparation
         public const int TierTwoStacks = 10; // must equal vanilla's flat Thrown bonus, so only this tier reaches max priority
         public const int TierOneStack = 7;
         public const int TierSinglesOnly = 3;
+        public const int TierStonesOnly = 1; // peasants and looters: still above non-throwers, below every real skirmisher
 
         // Same signature as TroopFilteringUtilities.GetPriorityFunction(TroopTraitsMask, out Func<Agent, int>).
         public static void GetPriorityFunction(TroopTraitsMask filter, out Func<Agent, int> priorityFunc)
@@ -93,7 +94,7 @@ namespace BetterSkirmisherSeparation
         // below it the agent scores as a non-thrower. 1 = every thrower qualifies (the behaviour without MCM).
         public static int GetTier(MissionEquipment equipment, int minThrowables = 1)
         {
-            int stacks = 0, singles = 0, count = 0;
+            int stacks = 0, singles = 0, stones = 0, count = 0;
             for (var i = EquipmentIndex.WeaponItemBeginSlot; i < EquipmentIndex.NumAllWeaponSlots; i++)
             {
                 MissionWeapon weapon = equipment[i];
@@ -108,8 +109,10 @@ namespace BetterSkirmisherSeparation
                     if (usages[u].IsRangedWeapon && usages[u].IsConsumable)
                     {
                         count += weapon.Amount;
+                        // every vanilla peasant kit carries a stack of throwing stones
+                        if (usages[u].WeaponClass == WeaponClass.Stone) stones++;
                         // javelins, throwing axes, knives; a one-shot primary throwable (modded) counts as a single
-                        if (u == 0 && weapon.ModifiedMaxAmount > 1) stacks++;
+                        else if (u == 0 && weapon.ModifiedMaxAmount > 1) stacks++;
                         else singles++;         // pila, heavy throwing spears: thrown only as an alternative use
                         break;
                     }
@@ -118,7 +121,8 @@ namespace BetterSkirmisherSeparation
             if (count < minThrowables) return 0;
             if (stacks >= 2) return TierTwoStacks;
             if (stacks == 1) return TierOneStack;
-            return singles > 0 ? TierSinglesOnly : 0;
+            if (singles > 0) return TierSinglesOnly;
+            return stones > 0 ? TierStonesOnly : 0;
         }
     }
 }
