@@ -1,6 +1,7 @@
 """Build a one-off Workshop update task file for TaleWorlds.MountAndBlade.SteamWorkshop.exe.
 
-Takes tools/WorkshopUpdate.xml (item ID, ModuleFolder, Tags) and adds:
+Takes tools/WorkshopUpdate.xml (item ID, Tags) and adds:
+  - ModuleFolder    = this repo's dist\\BetterSkirmisherSeparation (so the template holds no machine path)
   - ItemDescription = tools/STEAM-DESCRIPTION.bbcode, XML-escaped, line breaks as &#10;
   - ChangeNotes     = --notes (replaces the template's placeholder)
   - Visibility      = --visibility (Private / FriendsOnly / Public; omitted = leave as is)
@@ -45,6 +46,13 @@ def main() -> int:
 
     if "ITEM_ID" in xml or not re.search(r'<ItemId Value="\d+"', xml):
         sys.exit("template has no numeric ItemId")
+
+    dist = os.path.join(os.path.dirname(TOOLS), "dist", "BetterSkirmisherSeparation")
+    if not os.path.isfile(os.path.join(dist, "SubModule.xml")):
+        sys.exit(f"{dist} is not packaged - run tools\\package.ps1 first")
+    xml, n = re.subn(r'<ModuleFolder Value="[^"]*"', lambda m: f'<ModuleFolder Value="{escape_attr(dist)}"', xml)
+    if n != 1:
+        sys.exit("template needs exactly one <ModuleFolder .../>")
 
     xml, n = re.subn(r'<ChangeNotes Value="[^"]*"\s*/>',
                      lambda m: f'<ChangeNotes Value="{escape_attr(args.notes)}"/>', xml)

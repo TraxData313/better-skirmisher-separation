@@ -8,7 +8,7 @@
         <ItemId Value="3811452468"/>
     </GetItem>
     <UpdateItem>
-        <ModuleFolder Value="C:\Users\Trax\Documents\BannerlordMods\better_skirmisher_separation\dist\BetterSkirmisherSeparation"/>
+        <ModuleFolder Value="DIST_FOLDER"/>
         <ChangeNotes Value="vX.Y.Z - what changed." />
         <Tags>
             <Tag Value="Utility" />

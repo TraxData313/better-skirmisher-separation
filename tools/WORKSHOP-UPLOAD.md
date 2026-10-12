@@ -38,7 +38,7 @@ Item: **3811452468** (created Private 2026-10-01 via `WorkshopCreate.xml` - neve
    `%TEMP%\bss_workshop_update.xml` and the script prints the path:
    ```powershell
    $task = python tools\make_workshop_update.py --notes "v1.0.1 - what changed." --visibility Private
-   & "D:\SteamLibrary\steamapps\common\Mount & Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.SteamWorkshop.exe" $task
+   & "C:\Program Files (x86)\Steam\steamapps\common\Mount & Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.SteamWorkshop.exe" $task
    ```
    (`--no-description` skips the description.) Run it from a scratch folder; success = "Uploading done!".
    Every update re-uploads the module, so run `package.ps1 -Force` first. Going public later is the
