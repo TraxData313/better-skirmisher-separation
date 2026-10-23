@@ -16,7 +16,8 @@ are ranked by what they actually carry: two or more javelin stacks first, then o
 ## Install
 
 1. Download the zip from the [GitHub Releases page](https://github.com/TraxData313/better-skirmisher-separation/releases/latest),
-   or subscribe on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3811452468).
+   subscribe on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3811452468),
+   or get it from [Nexus Mods](https://www.nexusmods.com/mountandblade2bannerlord/mods/14214).
 2. Extract it into `Mount & Blade II Bannerlord\Modules\`.
 3. Enable it in the launcher.
 
